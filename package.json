@@ -1,6 +1,6 @@
 {
   "name": "lit-element-state-decoupler",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A lightweight utility for state handling outside of the component for litelements",
   "main": "index.js",
   "module": "index.js",
