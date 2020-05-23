@@ -1,0 +1,6 @@
+node_modules/
+coverage/
+**/*.d.ts
+**/*.map
+**/*.js
+!**/*.bundled.js

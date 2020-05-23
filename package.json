@@ -1,0 +1,41 @@
+{
+  "name": "lit-element-state-decoupler",
+  "version": "0.0.0",
+  "description": "A lightweight utility for state handling outside of the component for litelements",
+  "main": "index.js",
+  "module": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "jest --coverage",
+    "publish:npm": "npm test && npm run build && npm version patch -m 'New release to %s' && npm publish",
+    "serve": "es-dev-server --node-resolve --watch"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "es-dev-server": "^1.46.1",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.8.3"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "build"
+    ],
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
+  "author": "Matthias Kainer",
+  "license": "ISC"
+}
