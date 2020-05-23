@@ -16,7 +16,11 @@ jobs:
       uses: actions/setup-node@v1.4.2
       
     - name: Setup npm 
-      run: npm install
+      run: |
+        npm install
+        cd docs
+        npm install
+        cd ..
       
     - name: Build the project
       run: npm run build
