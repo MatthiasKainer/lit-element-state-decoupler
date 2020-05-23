@@ -20,6 +20,11 @@ describe("Dispatcher", () => {
         expect(dispatcher.getState()).not.toBe(initialState)
     })
 
+    it("sets the default state up correctly for different types", () => {
+        expect(useDispatcher<string>(litElement, "bla").getState()).toBe("bla")
+        expect(useDispatcher<number>(litElement, 3).getState()).toBe(3)
+    })
+
     describe("When the state is changed", () => {
         const subscriber = jest.fn()
 

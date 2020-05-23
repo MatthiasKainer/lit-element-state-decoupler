@@ -1,6 +1,10 @@
-# Lightweight dispatch/reducer based state management for LitElements
+# lit-element-state-decoupler
 
 A lightweight utility for state handling outside of the component for litelements
+
+## Install
+
+`npm install lit-element-state-decoupler`
 
 ## Usage
 

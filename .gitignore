@@ -4,3 +4,4 @@ coverage/
 **/*.map
 **/*.js
 !**/*.bundled.js
+!**/*.config.js
