@@ -43,7 +43,7 @@ render() {
     const {publish, getState} = this.reducer;
     return html`
         <button @click="${() => publish([...getState(), "lala"])}">Add value</button>
-        <textarea>${getState().join(",")}</textarea>
+        <textarea>${getState().values.join(",")}</textarea>
     `
 }
 
@@ -97,7 +97,7 @@ render() {
     const {publish, getState} = this.reducer;
     return html`
         <button @click="${() => publish("add", "lala")}">Add value</button>
-        <textarea>${getState().join(",")}</textarea>
+        <textarea>${getState().values.join(",")}</textarea>
     `
 }
 
