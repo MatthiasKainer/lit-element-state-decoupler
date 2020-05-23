@@ -14,7 +14,9 @@ The dispatcher is a simple way to create a stateful object, the reducer allows y
 
 ## Example
 
-See the following page for two todo-list examples using the `useDispatcher` and the `useReducer` functions.
+See the following page for two simple todo-list examples using the `useDispatcher` and the `useReducer` functions:
+
+[https://matthiaskainer.github.io/lit-element-state-decoupler/](https://matthiaskainer.github.io/lit-element-state-decoupler/)
 
 ### Dispatcher
 

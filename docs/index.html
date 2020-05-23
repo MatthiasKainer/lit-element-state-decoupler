@@ -4,12 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <title>lit-element-state-decoupler</title>
-    <link
-      id="favicon"
-      rel="icon"
-      type="image/x-icon"
-      href="favicon.ico?v=2"
-    />
+    <link id="favicon" rel="icon" type="image/x-icon" href="favicon.ico?v=2" />
     <script type="module" src="demo.bundled.js"></script>
     <style>
       /* devanagari */
@@ -68,13 +63,32 @@
 
         background-color: var(--colorMain);
       }
+      h1 {
+          color: var(--colorContrast);
+      }
+      h2 {
+          margin-top: 3rem;
+          color: var(--colorHighlight);
+      }
+      h3 {
+          color: var(--colorFocus);
+      }
       .container {
-          width: 100%;
+        width: 100%;
         display: flex;
-        align-items: stretch;
+      }
+      .demo {
+        border: 1px solid;
+        border-color: #ddd #ddd #ccc;
+        border-radius: 3px;
+        background-color: #fff;
+        margin-right: 5rem;
+        padding: 5rem;
       }
       .container > div {
         flex-grow: 1;
+        flex-basis: 0;
+        padding: 5rem;
       }
     </style>
   </head>
@@ -88,10 +102,30 @@
       The goal of this little tool is to allow you to decouple your business
       logic from your presentation.
     </p>
-    <h2>Dispatcher</h2>
-    <p>The dispatcher is a simple mechanismn to manage your state. It makes it easy to handle single </p>
+    <h2>When to use what?</h2>
     <div class="container">
       <div>
+        <h3>Dispatcher</h3>
+        <p>
+          Use it for <em>simple internal component state changed in a single place</em>, something you don't want to
+          expose to consumer of the component via props. An example can be the
+          <a href="https://github.com/MatthiasKainer/lit-element-state-decoupler/blob/master/docs/TodoBase.ts#L26" target="_blank">&lt;todo-add></a>
+          component for this demo
+        </p>
+      </div>
+      <div>
+        <h3>Reducer</h3>
+        <p>Use it for <em>complex internal component state changed in multiple places</em>, i.e. something which can be
+        created, viewed, updated and deleted. </p>
+      </div>
+    </div>
+    <h2>Dispatcher</h2>
+    <p>
+      The dispatcher is a simple mechanismn to manage your state. It makes it
+      easy to handle single
+    </p>
+    <div class="container">
+      <div class="demo">
         <dispatch-todo></dispatch-todo>
       </div>
       <div>
@@ -101,14 +135,20 @@
     </div>
 
     <h2>Reducer</h2>
-    <p>While the dispatcher can help you with small changes, as you can see in the todo app above it may lead to coupling your business logic with your presentation layer. To maintain that better, you might want to use the reducer instead.</p>
+    <p>
+      While the dispatcher can help you with small changes, as you can see in
+      the todo app above it may lead to coupling your business logic with your
+      presentation layer. To maintain that better, you might want to use the
+      reducer instead.
+    </p>
     <div class="container">
-      <div>
+      <div class="demo">
         <reducer-todo></reducer-todo>
       </div>
       <div>
         <h3>Code</h3>
-        <script src="https://gist.github.com/MatthiasKainer/eaaedeebdf4da15d7983a294eea9eb0f.js"></script>      </div>
+        <script src="https://gist.github.com/MatthiasKainer/eaaedeebdf4da15d7983a294eea9eb0f.js"></script>
+      </div>
     </div>
   </body>
 </html>
