@@ -64,14 +64,14 @@
         background-color: var(--colorMain);
       }
       h1 {
-          color: var(--colorContrast);
+        color: var(--colorContrast);
       }
       h2 {
-          margin-top: 3rem;
-          color: var(--colorHighlight);
+        margin-top: 3rem;
+        color: var(--colorHighlight);
       }
       h3 {
-          color: var(--colorFocus);
+        color: var(--colorFocus);
       }
       .container {
         width: 100%;
@@ -90,33 +90,61 @@
         flex-basis: 0;
         padding: 5rem;
       }
+      code {
+          background-color: var(--colorShow);
+      }
     </style>
   </head>
   <body>
     <h1>lit-element-state-decoupler</h1>
-    <p>
-      A lightweight utility for state handling outside of the component for
-      litelements.
-    </p>
-    <p>
-      The goal of this little tool is to allow you to decouple your business
-      logic from your presentation.
-    </p>
+    <div class="container">
+      <div>
+        <p>
+          A lightweight utility for state handling outside of the component for
+          litelements.
+        </p>
+        <p>
+          The goal of this little tool is to allow you to decouple your business
+          logic from your presentation.
+        </p>
+        <p>
+            For this, two functions are exposed:
+            <ul>
+                <li><code>useDispatcher</code></li>
+                <li><code>useReducer</code></li>
+            </ul>
+            The dispatcher is a simple way to create a stateful object, the reducer allows you to create a handler for multiple actions.
+        </p>
+      </div>
+      <div>
+        <script src="https://gist.github.com/MatthiasKainer/bb96611a11f54a62d85b23c2fd03e2aa.js"></script>
+      </div>
+    </div>
+
     <h2>When to use what?</h2>
     <div class="container">
       <div>
         <h3>Dispatcher</h3>
         <p>
-          Use it for <em>simple internal component state changed in a single place</em>, something you don't want to
-          expose to consumer of the component via props. An example can be the
-          <a href="https://github.com/MatthiasKainer/lit-element-state-decoupler/blob/master/docs/TodoBase.ts#L26" target="_blank">&lt;todo-add></a>
+          Use it for
+          <em>simple internal component state changed in a single place</em>,
+          something you don't want to expose to consumer of the component via
+          props. An example can be the
+          <a
+            href="https://github.com/MatthiasKainer/lit-element-state-decoupler/blob/master/docs/TodoBase.ts#L26"
+            target="_blank"
+            >&lt;todo-add></a
+          >
           component for this demo
         </p>
       </div>
       <div>
         <h3>Reducer</h3>
-        <p>Use it for <em>complex internal component state changed in multiple places</em>, i.e. something which can be
-        created, viewed, updated and deleted. </p>
+        <p>
+          Use it for
+          <em>complex internal component state changed in multiple places</em>,
+          i.e. something which can be created, viewed, updated and deleted.
+        </p>
       </div>
     </div>
     <h2>Dispatcher</h2>
