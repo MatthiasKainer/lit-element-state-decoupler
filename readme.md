@@ -1,6 +1,6 @@
 # lit-element-state-decoupler
 
-A lightweight utility for state handling outside of the component for litelements
+A lightweight utility for state handling outside of the component for [lit-elements](https://lit-element.polymer-project.org/)
 
 ## Install
 
@@ -41,10 +41,10 @@ constructor() {
 
 render() {
     const {publish, getState} = this.reducer;
-    return html`<button
-        @click="${() => publish([...getState(), "lala"])}"
-        >Add value</button>
-        <textarea>${getState().join(",")}</textarea>`
+    return html`
+        <button @click="${() => publish([...getState(), "lala"])}">Add value</button>
+        <textarea>${getState().join(",")}</textarea>
+    `
 }
 
 ```
@@ -95,11 +95,10 @@ constructor() {
 
 render() {
     const {publish, getState} = this.reducer;
-    return html`<button
-        @click="${() => publish("add", "lala")}"
-        >Add value</button>
+    return html`
+        <button @click="${() => publish("add", "lala")}">Add value</button>
         <textarea>${getState().join(",")}</textarea>
-        `
+    `
 }
 
 ```
