@@ -9,7 +9,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "test": "jest --coverage",
-    "release": "npm test && npm run build && npm version patch -m 'Creating new release %s' && gren release",
+    "release:patch": "npm test && npm run build && npm version patch -m 'Creating new release %s' && git push --tags && gren release",
     "serve": "es-dev-server --node-resolve --watch --root-dir docs"
   },
   "devDependencies": {

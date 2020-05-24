@@ -10,7 +10,8 @@ const exampleReducer = (state: StateExample, payload: unknown) => ({
 describe("Reducer", () => {
     let dispatcher: Reduce<StateExample>
     const litElement = {
-        requestUpdate: jest.fn()
+        requestUpdate: jest.fn(),
+        dispatchEvent: jest.fn()
     } as unknown as LitLikeElement
     const initialState = { value: "bla", other: "blub" }
 
@@ -47,6 +48,15 @@ describe("Reducer", () => {
         it("refreshes the owning component", () => {
             expect(litElement.requestUpdate).toBeCalledTimes(1)
         })
+
+        it("dispatches a custom event if specfied in the options", () => {
+            const reducer = useReducer(litElement, exampleReducer, initialState, { dispatchEvent: true })
+            reducer.publish("changeValue", "lala")
+            expect(litElement.dispatchEvent).toBeCalledTimes(1)
+            const detail = { change: "lala", state: reducer.getState() };
+            expect(litElement.dispatchEvent).toBeCalledWith(new CustomEvent("changeValue", { detail }))
+            expect((litElement.dispatchEvent as jest.Mock).mock.calls[0][0].detail).toEqual(detail)
+        })
     })
 
     describe("when triggering a non-existing action", () => {
@@ -70,6 +80,11 @@ describe("Reducer", () => {
 
         it("doesn't refresh the owning component", () => {
             expect(litElement.requestUpdate).not.toBeCalled()
+        })
+        it("doesn't dispatch a custom event if specfied in the options", () => {
+            const reducer = useReducer(litElement, exampleReducer, initialState, { dispatchEvent: true })
+            reducer.publish("notexisting", "lala")
+            expect(litElement.dispatchEvent).toBeCalledTimes(0)
         })
     })
 })

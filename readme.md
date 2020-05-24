@@ -64,13 +64,15 @@ This should be done only once, so usually you want to do it in the constructor o
 ```ts
 constructor() {
     super()
-    const {getState, publish, subscribe} = useReducer<YourState>(this, yourReducer, defaultState)
+    const {getState, publish, subscribe} = useReducer<YourState>(this, yourReducer, defaultState, options?)
 }
 ```
 
-Similar to the dispatcher, the reducer exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. In addition, it also requires a reducer function.
+Similar to the dispatcher, the reducer exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. In addition, it also requires a reducer function and can directly trigger custom events that bubble up and can be used by the parent.
 
 Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
+
+#### Reducer Function
 
 The reducer follows a definition of `(state: T, payload: unknown) => {[action: string]: () => T}`, so it's a function that returns a map of actions that are triggered by a specific action. Other then in `redux`, no default action has to be provided. If the action does not exist, it falls back to returning the current state.
 
@@ -84,6 +86,14 @@ const exampleReducer = (state: StateExample, payload) => ({
     empty: () => ({...state, value: []})
 })
 ```
+
+#### Options
+
+| variable | description |
+|-|-|
+| `dispatchEvent: boolean` (default: false) | If set to true, dispatches a action as custom event from the component |
+
+#### Publish
 
 The reducer can be triggered whenever the reducer's `publish` function is triggered, i.e.
 
@@ -102,6 +112,37 @@ render() {
 }
 
 ```
+
+#### Publish with custom evens
+
+If specified in the options, the publish will also be dispatched as a custom event. An example would look like this:
+
+```ts
+class StateExample { constructor(public values = []) {} }
+
+const exampleReducer = (state: StateExample, payload) => ({
+    add: () => ({...state, value: [...state.values, payload]}),
+    empty: () => ({...state, value: []})
+})
+
+class ClickableComponent extends LitElement {
+    constructor() {
+        super()
+        this.reducer = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
+    }
+
+    render() {
+        const {publish, getState} = this.reducer;
+
+        return html`
+            <button @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>
+        `
+    }
+}
+
+```
+
+#### Arguments
 
 | function | description |
 |-|-|

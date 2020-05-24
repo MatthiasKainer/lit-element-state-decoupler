@@ -7,7 +7,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "es-dev-server --node-resolve --watch",
-    "dist": "rollup -c"
+    "dist": "rollup -c -m inline"
   },
   "dependencies": {
     "lit-element": "^2.3.1",

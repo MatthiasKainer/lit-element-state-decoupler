@@ -183,6 +183,20 @@
         <script src="https://gist.github.com/MatthiasKainer/eaaedeebdf4da15d7983a294eea9eb0f.js"></script>
       </div>
     </div>
+    <h2>Reducer with custom events</h2>
+    <p>The reducer can also be configured to dispatch `CustomEvent`s for the triggered actions. 
+        This allows you to easily bubble your changes up to the parent component, and manage
+        your state even more easily.
+    </p>
+
+    <div class="container">
+        <div class="demo">
+          <demo-parent></demo-parent>
+        </div>
+        <div>
+          <h3>Code</h3>
+          <script src="https://gist.github.com/MatthiasKainer/e5f14d5ef2dabe85d4b024e28a0f1139.js"></script>        </div>
+      </div>
     <h2>Playground</h2>
     <div>
         <iframe src="https://stackblitz.com/edit/typescript-meqnya?embed=1&file=index.ts"></iframe>
