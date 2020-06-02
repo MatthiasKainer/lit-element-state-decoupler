@@ -1,5 +1,5 @@
 ---
   dataSource: "commits"
   prefix: "Release "
-  includeMessages: "all"
+  includeMessages: "commits"
   changelogFilename: "CHANGELOG.md"
