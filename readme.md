@@ -113,7 +113,7 @@ render() {
 
 ```
 
-#### Publish with custom evens
+#### Publish with custom events
 
 If specified in the options, the publish will also be dispatched as a custom event. An example would look like this:
 
@@ -125,6 +125,7 @@ const exampleReducer = (state: StateExample, payload) => ({
     empty: () => ({...state, value: []})
 })
 
+@customElement("demo-clickme")
 class ClickableComponent extends LitElement {
     constructor() {
         super()
@@ -139,6 +140,12 @@ class ClickableComponent extends LitElement {
         `
     }
 }
+
+// usage
+html`
+<demo-clickme @add="${(e: CustomEvent) => console.log(e.detail.state)}">
+</demo-clickme>
+`
 
 ```
 
