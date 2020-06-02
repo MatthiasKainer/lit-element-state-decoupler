@@ -81,6 +81,7 @@ describe("Reducer", () => {
         it("doesn't refresh the owning component", () => {
             expect(litElement.requestUpdate).not.toBeCalled()
         })
+        
         it("doesn't dispatch a custom event if specfied in the options", () => {
             const reducer = useReducer(litElement, exampleReducer, initialState, { dispatchEvent: true })
             reducer.publish("notexisting", "lala")
