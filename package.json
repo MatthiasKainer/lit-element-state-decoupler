@@ -2,8 +2,8 @@
   "name": "lit-element-state-decoupler",
   "version": "0.0.7",
   "description": "A lightweight utility for state handling outside of the component for litelements",
-  "main": "index.js",
-  "module": "index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",

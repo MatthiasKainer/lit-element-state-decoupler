@@ -6,3 +6,4 @@ coverage/
 !**/*.bundled.js
 !**/*.config.js
 .pytest_cache/
+dist/
