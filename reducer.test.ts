@@ -1,5 +1,6 @@
 import { LitLikeElement, Reduce } from "./types";
 import { useReducer } from "./reducer"
+import { asUpdateableLitElement } from "./decorator";
 
 class StateExample { constructor(public value = "true") {} }
 
@@ -8,7 +9,7 @@ const exampleReducer = (state: StateExample, payload: unknown) => ({
 })
 
 describe("Reducer", () => {
-    let dispatcher: Reduce<StateExample>
+    let reducer: Reduce<StateExample>
     const litElement = {
         requestUpdate: jest.fn(),
         dispatchEvent: jest.fn()
@@ -17,12 +18,12 @@ describe("Reducer", () => {
 
     beforeEach(() => {
         jest.resetAllMocks()
-        dispatcher = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        reducer = useReducer<StateExample>(litElement, exampleReducer, initialState)
     })
 
     it("sets up the default state", () => {
-        expect(dispatcher.getState()).toEqual(initialState)
-        expect(dispatcher.getState()).not.toBe(initialState)
+        expect(reducer.getState()).toEqual(initialState)
+        expect(reducer.getState()).not.toBe(initialState)
     })
 
     describe("when triggering an existing action", () => {
@@ -30,14 +31,14 @@ describe("Reducer", () => {
         let currentState: StateExample
 
         beforeEach(() => {
-            dispatcher.subscribe(subscriber)
-            currentState = dispatcher.getState()
-            dispatcher.publish("changeValue", "lala")
+            reducer.subscribe(subscriber)
+            currentState = reducer.getState()
+            reducer.publish("changeValue", "lala")
         })
 
         it("updates the state", () => {
-            expect(dispatcher.getState()).toEqual({...currentState, value: "lala"})
-            expect(dispatcher.getState()).not.toBe(currentState)
+            expect(reducer.getState()).toEqual({...currentState, value: "lala"})
+            expect(reducer.getState()).not.toBe(currentState)
         })
 
         it("notifies any subscriber", () => {
@@ -64,14 +65,14 @@ describe("Reducer", () => {
         let currentState: StateExample
 
         beforeEach(() => {
-            dispatcher.subscribe(subscriber)
-            currentState = dispatcher.getState()
-            dispatcher.publish("notexisting", "lala")
+            reducer.subscribe(subscriber)
+            currentState = reducer.getState()
+            reducer.publish("notexisting", "lala")
         })
 
         it("doesn't update the state", () => {
-            expect(dispatcher.getState()).toEqual(currentState)
-            expect(dispatcher.getState()).toBe(currentState)
+            expect(reducer.getState()).toEqual(currentState)
+            expect(reducer.getState()).toBe(currentState)
         })
 
         it("doesn't notify any subscriber", () => {
@@ -87,5 +88,45 @@ describe("Reducer", () => {
             reducer.publish("notexisting", "lala")
             expect(litElement.dispatchEvent).toBeCalledTimes(0)
         })
+    })
+})
+
+
+describe("reducer - reducer registration", () => {
+
+    let reducer: Reduce<StateExample>
+    let litElement: LitLikeElement
+    const initialState = { value: "bla", other: "blub" }
+
+    beforeEach(() => {
+        jest.resetAllMocks()
+        litElement = {
+            requestUpdate: jest.fn(),
+            dispatchEvent: jest.fn(),
+            updated: jest.fn()
+        } as unknown as LitLikeElement
+        reducer = useReducer<StateExample>(litElement, exampleReducer, initialState)
+    })
+
+    it("should retrieve the same reducer after an update", () => {
+        asUpdateableLitElement(litElement).updated();
+        const reducer1 = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        asUpdateableLitElement(litElement).updated();
+        const reducer2 = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        expect(reducer1).toBe(reducer2)
+        expect(reducer).toBe(reducer2)
+    })
+
+    it("should add multiple reducers between updates", () => {
+        const reducer1 = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        const reducer2 = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        asUpdateableLitElement(litElement).updated();
+        const retrieved0 = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        const retrieved1 = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        const retrieved2 = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        asUpdateableLitElement(litElement).updated();
+        expect(retrieved0).toBe(reducer)
+        expect(reducer1).toBe(retrieved1)
+        expect(reducer2).toBe(retrieved2)
     })
 })

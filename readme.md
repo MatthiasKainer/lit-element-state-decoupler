@@ -22,11 +22,10 @@ See the following page for two simple todo-list examples using the `useDispatche
 
 Getting access to the dispatcher can be done by calling the `useDispatcher` function.
 
-This should be done only once, so usually you want to do it in the constructor of your component.
+This should be done on one location in the lifecycle, and not inside a loop with a changing number of iterations because it tries to re-resolve the correct element from the previous run.
 
 ```ts
-constructor() {
-    super()
+render() {
     const {getState, publish, subscribe} = useDispatcher<YourState>(this, defaultState)
 }
 ```
@@ -34,13 +33,8 @@ constructor() {
 The dispatcher exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
 
 ```ts
-constructor() {
-    super()
-    this.reducer = useDispatcher<StateExample>(this, { values: [] })
-}
-
 render() {
-    const {publish, getState} = this.reducer;
+    const {publish, getState} = useDispatcher<StateExample>(this, { values: [] })
     return html`
         <button @click="${() => publish([...getState(), "lala"])}">Add value</button>
         <textarea>${getState().values.join(",")}</textarea>
@@ -59,11 +53,10 @@ render() {
 
 Getting access to the reducer can be done by calling the `useReducer` function.
 
-This should be done only once, so usually you want to do it in the constructor of your component.
+This should be done on one location in the lifecycle, and not inside a loop with a changing number of iterations because it tries to re-resolve the correct element from the previous run.
 
 ```ts
-constructor() {
-    super()
+render() {
     const {getState, publish, subscribe} = useReducer<YourState>(this, yourReducer, defaultState, options?)
 }
 ```
@@ -98,19 +91,14 @@ const exampleReducer = (state: StateExample, payload) => ({
 The reducer can be triggered whenever the reducer's `publish` function is triggered, i.e.
 
 ```ts
-constructor() {
-    super()
-    this.reducer = useReducer<StateExample>(this, exampleReducer, { values: [] })
-}
-
 render() {
-    const {publish, getState} = this.reducer;
+    const {publish, getState} = useReducer<StateExample>(this, exampleReducer, { values: [] });
     return html`
         <button @click="${() => publish("add", "lala")}">Add value</button>
+        <button @click="${() => publish("empty")}">Clean</button>
         <textarea>${getState().values.join(",")}</textarea>
     `
 }
-
 ```
 
 #### Publish with custom events
@@ -121,19 +109,13 @@ If specified in the options, the publish will also be dispatched as a custom eve
 class StateExample { constructor(public values = []) {} }
 
 const exampleReducer = (state: StateExample, payload) => ({
-    add: () => ({...state, value: [...state.values, payload]}),
-    empty: () => ({...state, value: []})
+    add: () => ({...state, value: [...state.values, payload]})
 })
 
 @customElement("demo-clickme")
 class ClickableComponent extends LitElement {
-    constructor() {
-        super()
-        this.reducer = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
-    }
-
     render() {
-        const {publish, getState} = this.reducer;
+        const {publish, getState} = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
 
         return html`
             <button @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>

@@ -1,5 +1,5 @@
 import { LitElement, customElement, property, html, css } from "lit-element";
-import { useDispatcher, Dispatch } from "lit-element-state-decoupler";
+import { useDispatcher } from "lit-element-state-decoupler";
 
 const blockElement = css`
     :host {
@@ -21,19 +21,12 @@ export class TodoList extends LitElement {
   }
 }
 
-interface AddTodoState { value: string }
-
 @customElement("todo-add")
 export class AddTodo extends LitElement {
-  constructor(private todo: Dispatch<AddTodoState>) {
-    super();
-    this.todo = useDispatcher(this, {value: ""});
-  }
-
   static get styles() { return [blockElement] }
 
   render() {
-    const { getState, publish } = this.todo;
+    const { getState, publish } = useDispatcher(this, {value: ""});
     return html`
       <input
         type="text"

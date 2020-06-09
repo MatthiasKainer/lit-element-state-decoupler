@@ -1,9 +1,24 @@
-export type LitLikeElement = { 
-    requestUpdate: () => void 
+export type LitLikeElement = {
+    requestUpdate: () => void
     dispatchEvent: (e: Event) => boolean
 }
 
-export type Reducer<T> = (state: T, payload: unknown) => {[action: string]: () => T}
+export type UpdateableLitLikeElement = {
+    updated(_?: any): void
+}
+
+type Dispatchers = {
+    index: number,
+    count: number,
+    dispatchers: Dispatch<any>[]
+    reducers: Reduce<any>[]
+}
+
+export type DecoratedLitLikeElement = LitLikeElement & {
+    __registered_dispatchers: Dispatchers
+}
+
+export type Reducer<T> = (state: T, payload: unknown | undefined) => {[action: string]: () => T}
 
 export type ReducerOptions = {
     dispatchEvent?: boolean

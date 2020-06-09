@@ -1,5 +1,5 @@
 import { LitElement, customElement, html } from "lit-element";
-import { useReducer, Reducer, Reduce } from "lit-element-state-decoupler";
+import { Reducer, useReducer } from "lit-element-state-decoupler";
 
 import "./TodoBase";
 
@@ -17,13 +17,8 @@ const TodoReducer: Reducer<TodoState> = (state, payload) => ({
 
 @customElement("reducer-todo")
 export class Todo extends LitElement {
-  constructor(private todo: Reduce<TodoState>) {
-    super();
-    this.todo = useReducer(this, TodoReducer, { todos: [] } as TodoState);
-  }
-
   render() {
-    const { publish, getState } = this.todo;
+    const { publish, getState } = useReducer(this, TodoReducer, { todos: [] } as TodoState);
     return html`
       <h2>Your todos</h2>
       <todo-add
