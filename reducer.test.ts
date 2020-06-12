@@ -43,7 +43,7 @@ describe("Reducer", () => {
 
         it("notifies any subscriber", () => {
             expect(subscriber).toBeCalledTimes(1)
-            expect(subscriber).toBeCalledWith({...currentState, value: "lala"})
+            expect(subscriber).toBeCalledWith("changeValue", {...currentState, value: "lala"})
         })
 
         it("refreshes the owning component", () => {
