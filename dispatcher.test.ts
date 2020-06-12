@@ -26,6 +26,29 @@ describe("Dispatcher", () => {
         expect(useDispatcher<number>(litElement, 3).getState()).toBe(3)
     })
 
+    describe("When the state is published without change", () => {
+        const subscriber = jest.fn()
+        let state: StateExample
+
+        beforeEach(() => {
+            state = dispatcher.getState()
+            dispatcher.subscribe(subscriber)
+            dispatcher.publish(state)
+        })
+
+        it("does not update the state", () => {
+            expect(dispatcher.getState()).toBe(state)
+        })
+
+        it("does not notifies any subscriber", () => {
+            expect(subscriber).toBeCalledTimes(0)
+        })
+
+        it("does not refresh the owning component", () => {
+            expect(litElement.requestUpdate).toBeCalledTimes(0)
+        })
+    })
+
     describe("When the state is changed", () => {
         const subscriber = jest.fn()
 
@@ -35,12 +58,12 @@ describe("Dispatcher", () => {
         })
 
         it("updates the state", () => {
-            expect(dispatcher.getState()).toEqual({...initialState, value: "new"})
+            expect(dispatcher.getState()).toEqual({ value: "new"})
         })
 
         it("notifies any subscriber", () => {
             expect(subscriber).toBeCalledTimes(1)
-            expect(subscriber).toBeCalledWith({...initialState, value: "new"})
+            expect(subscriber).toBeCalledWith({ value: "new"})
         })
 
         it("refreshes the owning component", () => {
