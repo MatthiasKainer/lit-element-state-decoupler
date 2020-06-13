@@ -3,8 +3,7 @@
 ![Version](https://img.shields.io/npm/v/lit-element-state-decoupler?style=for-the-badge)
 ![Size](https://img.shields.io/bundlephobia/minzip/lit-element-state-decoupler?style=for-the-badge)
 ![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/lit-element-state-decoupler?style=for-the-badge)
-![dependencies](https://img.shields.io/badge/dependecies-0-brightgreen?style=for-the-badge)
-
+![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)
 ![Statements](badges/badge-statements.svg)
 ![Branch](badges/badge-branches.svg)
 ![Functions](badges/badge-functions.svg)
