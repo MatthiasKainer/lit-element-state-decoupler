@@ -5,7 +5,8 @@ import { asUpdateableLitElement } from "./decorator";
 class StateExample { constructor(public value = "true") {} }
 
 const exampleReducer = (state: StateExample) => ({
-    changeValue: (payload: string) => ({...state, value: payload} as StateExample)
+    changeValue: (payload: string) => ({...state, value: payload} as StateExample),
+    otherAction: (payload: string) => ({...state, value: payload} as StateExample)
 })
 
 describe("Reducer", () => {
@@ -28,26 +29,35 @@ describe("Reducer", () => {
 
     describe("when triggering an existing action", () => {
         const subscriber = jest.fn()
+        const when = jest.fn()
         let currentState: StateExample
 
         beforeEach(() => {
             reducer.subscribe(subscriber)
+            reducer.when("changeValue", when)
             currentState = reducer.getState()
             reducer.publish("changeValue", "lala")
+            reducer.publish("otherAction", "blablub")
         })
 
         it("updates the state", () => {
-            expect(reducer.getState()).toEqual({...currentState, value: "lala"})
+            expect(reducer.getState()).toEqual({...currentState, value: "blablub"})
             expect(reducer.getState()).not.toBe(currentState)
         })
 
         it("notifies any subscriber", () => {
-            expect(subscriber).toBeCalledTimes(1)
+            expect(subscriber).toBeCalledTimes(2)
             expect(subscriber).toBeCalledWith("changeValue", {...currentState, value: "lala"})
+            expect(subscriber).toBeCalledWith("otherAction", {...currentState, value: "blablub"})
+        })        
+        
+        it("notifies any when", () => {
+            expect(when).toBeCalledTimes(1)
+            expect(when).toBeCalledWith({...currentState, value: "lala"})
         })
 
-        it("refreshes the owning component", () => {
-            expect(litElement.requestUpdate).toBeCalledTimes(1)
+        it("refreshes the owning component every time", () => {
+            expect(litElement.requestUpdate).toBeCalledTimes(2)
         })
 
         it("dispatches a custom event if specfied in the options", () => {

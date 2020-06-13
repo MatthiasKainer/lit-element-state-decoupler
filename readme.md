@@ -131,6 +131,34 @@ html`
 
 ```
 
+#### Subscribe to published events
+
+For side effects it might be interesting for you to listen to your own dispatched events. This can be done via `subscribe`.
+
+Usage:
+
+```ts
+const {publish, getState, subscribe} = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
+
+subscribe((action, state) => console.log("Action triggered:", action, "State:", state))
+
+return html`
+    <button @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>
+`
+```
+
+In case you want to listen to a single action you can use the convenience method `when`.
+
+```ts
+const {publish, getState, when} = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
+
+when("add", (state) => console.log("Add triggered! State:", state))
+
+return html`
+    <button @hover="${() => publish("highlight")}" @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>
+`
+```
+
 #### Arguments
 
 | function | description |

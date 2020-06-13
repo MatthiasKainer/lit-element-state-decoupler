@@ -9,6 +9,7 @@ export const useReducer = <T>(element: LitLikeElement, reducer: Reducer<T>, defa
     return withReducer(element, {
         getState,
         subscribe: (onChange) => subscribers.push(onChange),
+        when: (action, onChange) => subscribers.push((triggeredAction, state) => triggeredAction === action && onChange(state)),
         publish: (action, payload) => {
             const reducers = reducer(getState())
             if (reducers[action]) {

@@ -11,6 +11,7 @@ function createDispatcher() {
 
 function createReducer() {
   return {
+    when: jest.fn(),
     publish: jest.fn(),
     subscribe: jest.fn(),
     getState: jest.fn(),
