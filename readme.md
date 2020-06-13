@@ -4,6 +4,11 @@
 ![Size](https://img.shields.io/bundlephobia/minzip/lit-element-state-decoupler?style=for-the-badge)
 ![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/lit-element-state-decoupler?style=for-the-badge)
 
+![Statements](badges/badge-statements.svg)
+![Branch](badges/badge-branches.svg)
+![Functions](badges/badge-functions.svg)
+![Lines](badges/badge-lines.svg)
+
 A lightweight utility for state handling outside of the component for [lit-elements](https://lit-element.polymer-project.org/)
 
 ## Install
