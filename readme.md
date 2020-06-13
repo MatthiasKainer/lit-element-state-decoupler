@@ -1,9 +1,10 @@
 # lit-element-state-decoupler
 
-![Version](https://img.shields.io/npm/v/lit-element-state-decoupler?style=for-the-badge)
-![Size](https://img.shields.io/bundlephobia/minzip/lit-element-state-decoupler?style=for-the-badge)
-![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/lit-element-state-decoupler?style=for-the-badge)
-![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)
+[![Version](https://img.shields.io/npm/v/lit-element-state-decoupler?style=for-the-badge)](https://www.npmjs.com/package/lit-element-state-decoupler)
+[![Size](https://img.shields.io/bundlephobia/minzip/lit-element-state-decoupler?style=for-the-badge)](https://bundlephobia.com/result?p=lit-element-state-decoupler)
+[![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/lit-element-state-decoupler?style=for-the-badge)](https://snyk.io/test/github/MatthiasKainer/lit-element-state-decoupler?targetFile=package.json)
+[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](https://bundlephobia.com/result?p=lit-element-state-decoupler)
+[![code quality](https://img.shields.io/codeclimate/maintainability/MatthiasKainer/lit-element-state-decoupler?style=for-the-badge)](https://codeclimate.com/github/MatthiasKainer/lit-element-state-decoupler)
 ![Statements](badges/badge-statements.svg)
 ![Branch](badges/badge-branches.svg)
 ![Functions](badges/badge-functions.svg)

@@ -51,5 +51,6 @@
     }
   },
   "author": "Matthias Kainer",
-  "license": "ISC"
+  "license": "ISC",
+  "homepage": "https://github.com/MatthiasKainer/lit-element-state-decoupler"
 }
