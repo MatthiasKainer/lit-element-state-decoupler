@@ -119,7 +119,8 @@ const exampleReducer = (state: StateExample) => ({
 @customElement("demo-clickme")
 class ClickableComponent extends LitElement {
     render() {
-        const {publish, getState} = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
+        const {publish, getState}
+            = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
 
         return html`
             <button @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>
@@ -142,7 +143,7 @@ For side effects it might be interesting for you to listen to your own dispatche
 Usage:
 
 ```ts
-const {publish, getState, subscribe} = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
+const {publish, getState, subscribe} = useReducer<StateExample>(this, exampleReducer, 0)
 
 subscribe((action, state) => console.log("Action triggered:", action, "State:", state))
 
@@ -154,7 +155,7 @@ return html`
 In case you want to listen to a single action you can use the convenience method `when`.
 
 ```ts
-const {publish, getState, when} = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
+const {publish, getState, when} = useReducer<StateExample>(this, exampleReducer, 0)
 
 when("add", (state) => console.log("Add triggered! State:", state))
 
