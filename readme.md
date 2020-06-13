@@ -1,5 +1,9 @@
 # lit-element-state-decoupler
 
+![Version](https://img.shields.io/npm/v/lit-element-state-decoupler?style=for-the-badge)
+![Size](https://img.shields.io/bundlephobia/minzip/lit-element-state-decoupler?style=for-the-badge)
+![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/lit-element-state-decoupler?style=for-the-badge)
+
 A lightweight utility for state handling outside of the component for [lit-elements](https://lit-element.polymer-project.org/)
 
 ## Install
@@ -166,3 +170,4 @@ return html`
 | getState() => YourState | Returns the current state |
 | publish(action: string, payload: unknown) => void | Triggers the defined `action` on your reducer, passing the payload |
 | subscribe(yourSubscriberFunction) => void | Notifies subscribed functions when the state has been changed |
+| when(action, yourSubscriberFunction) => void | Notifies subscribed functions when the action has been triggered |
