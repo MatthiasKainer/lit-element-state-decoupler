@@ -18,7 +18,7 @@ export type DecoratedLitLikeElement = LitLikeElement & {
     __registered_dispatchers: Dispatchers
 }
 
-export type Reducer<T> = (state: T, payload: unknown | undefined) => {[action: string]: () => T}
+export type Reducer<T> = (state: T) => {[action: string]: (payload?: any | unknown | undefined) => T}
 
 export type ReducerOptions = {
     dispatchEvent?: boolean

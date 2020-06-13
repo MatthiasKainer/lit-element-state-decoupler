@@ -4,8 +4,8 @@ import { asUpdateableLitElement } from "./decorator";
 
 class StateExample { constructor(public value = "true") {} }
 
-const exampleReducer = (state: StateExample, payload: unknown) => ({
-    changeValue: () => ({...state, value: payload} as StateExample)
+const exampleReducer = (state: StateExample) => ({
+    changeValue: (payload: string) => ({...state, value: payload} as StateExample)
 })
 
 describe("Reducer", () => {

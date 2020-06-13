@@ -8,8 +8,8 @@ type LitLikeElementWithRender = LitLikeElement & {
     updated: () => void
 }
 
-const exampleReducer = (_: string, payload: unknown) => ({
-    change: () => payload as string
+const exampleReducer = (_: string) => ({
+    change: (payload: string) => payload
 })
 
 describe("A lit element with reducers and dispatchers", () => {

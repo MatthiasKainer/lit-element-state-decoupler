@@ -74,8 +74,8 @@ An example implementation of a reducer is thus:
 ```ts
 class StateExample { constructor(public values = []) {} }
 
-const exampleReducer = (state: StateExample, payload) => ({
-    add: () => ({...state, value: [...state.values, payload]}),
+const exampleReducer = (state: StateExample) => ({
+    add: (payload: string) => ({...state, value: [...state.values, payload]}),
     empty: () => ({...state, value: []})
 })
 ```
@@ -108,8 +108,8 @@ If specified in the options, the publish will also be dispatched as a custom eve
 ```ts
 class StateExample { constructor(public values = []) {} }
 
-const exampleReducer = (state: StateExample, payload) => ({
-    add: () => ({...state, value: [...state.values, payload]})
+const exampleReducer = (state: StateExample) => ({
+    add: (payload) => ({...state, value: [...state.values, payload]})
 })
 
 @customElement("demo-clickme")

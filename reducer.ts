@@ -10,9 +10,9 @@ export const useReducer = <T>(element: LitLikeElement, reducer: Reducer<T>, defa
         getState,
         subscribe: (onChange) => subscribers.push(onChange),
         publish: (action, payload) => {
-            const reducers = reducer(getState(), payload)
+            const reducers = reducer(getState())
             if (reducers[action]) {
-                publish(reducers[action]())
+                publish(reducers[action](payload))
                 subscribers.forEach(subscriber => subscriber(action, getState()));
                 options.dispatchEvent && 
                     element.dispatchEvent(new CustomEvent(action, { detail: {change: payload, state: getState()} }))
