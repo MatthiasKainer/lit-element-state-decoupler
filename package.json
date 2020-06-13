@@ -1,56 +1,29 @@
 {
-  "name": "lit-element-state-decoupler",
-  "version": "0.2.1",
-  "description": "A lightweight utility for state handling outside of the component for litelements",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "type": "module",
+  "name": "litelement-dispatcher-docs",
+  "version": "1.0.0",
+  "description": "Usage docs for litelement dispatcher",
+  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "test": "jest --coverage",
-    "test:badges": "npm test && jest-coverage-badges --output ./badges",
-    "release:beta": "npm test && npm run build && npm publish --tag=beta",
-    "release:patch": "npm run test:badges && npm run build && npm version patch -m 'Creating new release %s' && git push && git push --tags && gren release",
-    "release:minor": "npm run test:badges && npm run build && npm version minor -m 'Creating new release %s' && git push && git push --tags && gren release",
-    "serve": "es-dev-server --node-resolve --watch --root-dir docs"
+    "serve": "es-dev-server --node-resolve --watch",
+    "dist": "rollup -c -m inline"
+  },
+  "dependencies": {
+    "lit-element": "^2.3.1",
+    "lit-element-state-decoupler": "0.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.3",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-replace": "^2.3.2",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
     "es-dev-server": "^1.46.1",
-    "jest": "^26.0.1",
-    "ts-jest": "^26.0.0",
-    "ts-lit-plugin": "^1.1.11",
+    "rollup": "^1.32.1",
+    "rollup-plugin-filesize": "^7.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.3.0",
     "typescript": "^3.8.3"
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testPathIgnorePatterns": [
-      "node_modules",
-      "build"
-    ],
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "coverageReporters": [
-      "json-summary",
-      "text"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
-    }
   },
   "author": "Matthias Kainer",
   "license": "ISC"

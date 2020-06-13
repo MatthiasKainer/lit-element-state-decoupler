@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "CommonJS",
+    "target": "es2017",
+    "module": "es2015",
     "lib": ["es2017", "dom", "dom.iterable"],
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "strict": true,
-    "outDir": "./dist",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
@@ -24,5 +23,5 @@
     ]
   },
   "include": ["**/*.ts"],
-  "exclude": ["docs/**/*", "dist/**/*"]
+  "exclude": []
 }
