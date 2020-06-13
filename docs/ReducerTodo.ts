@@ -7,9 +7,9 @@ interface TodoState {
   todos: string[];
 }
 
-const TodoReducer: Reducer<TodoState> = (state, payload) => ({
-  add: () => ({ ...state, todos: [...state.todos, payload as string] }),
-  remove: () => ({
+const TodoReducer: Reducer<TodoState> = (state) => ({
+  add: (payload: string) => ({ ...state, todos: [...state.todos, payload as string] }),
+  remove: (payload: string) => ({
     ...state,
     todos: [...state.todos.filter((todo) => todo !== payload)],
   })
