@@ -12,8 +12,7 @@
     "test:badges": "npm test && jest-coverage-badges --output ./badges",
     "release:beta": "npm test && npm run build && npm publish --tag=beta",
     "release:patch": "npm run test:badges && npm run build && npm version patch -m 'Creating new release %s' && git push && git push --tags && gren release",
-    "release:minor": "npm run test:badges && npm run build && npm version minor -m 'Creating new release %s' && git push && git push --tags && gren release",
-    "serve": "es-dev-server --node-resolve --watch --root-dir docs"
+    "release:minor": "npm run test:badges && npm run build && npm version minor -m 'Creating new release %s' && git push && git push --tags && gren release"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
