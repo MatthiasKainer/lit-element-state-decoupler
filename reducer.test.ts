@@ -54,7 +54,7 @@ describe("Reducer", () => {
             const reducer = useReducer(litElement, exampleReducer, initialState, { dispatchEvent: true })
             reducer.publish("changeValue", "lala")
             expect(litElement.dispatchEvent).toBeCalledTimes(1)
-            const detail = { change: "lala", state: reducer.getState() };
+            const detail = reducer.getState();
             expect(litElement.dispatchEvent).toBeCalledWith(new CustomEvent("changeValue", { detail }))
             expect((litElement.dispatchEvent as jest.Mock).mock.calls[0][0].detail).toEqual(detail)
         })

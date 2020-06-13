@@ -125,7 +125,7 @@ class ClickableComponent extends LitElement {
 
 // usage
 html`
-<demo-clickme @add="${(e: CustomEvent) => console.log(e.detail.state)}">
+<demo-clickme @add="${(e: CustomEvent<StateExample>) => console.log(e.detail)}">
 </demo-clickme>
 `
 
