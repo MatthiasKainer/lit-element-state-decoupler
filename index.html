@@ -115,10 +115,10 @@
         <p>
             For this, two functions are exposed:
             <ul>
-                <li><code>useDispatcher</code></li>
+                <li><code>useState</code></li>
                 <li><code>useReducer</code></li>
             </ul>
-            The dispatcher is a simple way to create a stateful object, the reducer allows you to create a handler for multiple actions.
+            The useState hook is a simple way to create a stateful object, the reducer allows you to create a handler for multiple actions.
         </p>
       </div>
       <div>
@@ -129,7 +129,7 @@
     <h2>When to use what?</h2>
     <div class="container">
       <div>
-        <h3>Dispatcher</h3>
+        <h3>State</h3>
         <p>
           Use it for
           <em>simple internal component state changed in a single place</em>,
@@ -152,9 +152,9 @@
         </p>
       </div>
     </div>
-    <h2>Dispatcher</h2>
+    <h2>State</h2>
     <p>
-      The dispatcher is a simple mechanismn to manage your state. It makes it
+      The useState hook is a simple mechanismn to manage your state. It makes it
       easy to handle single
     </p>
     <div class="container">
@@ -169,7 +169,7 @@
 
     <h2>Reducer</h2>
     <p>
-      While the dispatcher can help you with small changes, as you can see in
+      While the useState hook can help you with small changes, as you can see in
       the todo app above it may lead to coupling your business logic with your
       presentation layer. To maintain that better, you might want to use the
       reducer instead.

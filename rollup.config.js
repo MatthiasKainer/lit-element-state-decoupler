@@ -5,7 +5,7 @@ import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
 
 export default {
-  input: './demo.js',
+  input: './dist/demo.js',
   output: {
     file: 'demo.bundled.js',
     format: 'cjs',

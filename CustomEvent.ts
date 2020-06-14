@@ -1,5 +1,5 @@
 import { LitElement, html, customElement, property } from "lit-element";
-import { useReducer, useDispatcher } from "lit-element-state-decoupler";
+import { useReducer, useState } from "lit-element-state-decoupler";
 
 const clickReducer = (state: number) => ({
     add: (payload: number) => state + (payload as number ?? 0)
@@ -23,7 +23,7 @@ export class Clickable extends LitElement {
 @customElement("demo-parent")
 export class DemoParent extends LitElement {
     render() {
-        const {publish, getState} = useDispatcher(this, 0)
+        const {publish, getState} = useState(this, 0)
         return html`
             <demo-clickme startWith="0" @add="${(e: CustomEvent<number>) => publish(e.detail)}">
                 Clicked ${getState()} times

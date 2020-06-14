@@ -3,6 +3,7 @@
     "target": "es2017",
     "module": "es2015",
     "lib": ["es2017", "dom", "dom.iterable"],
+    "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

@@ -1,5 +1,5 @@
 import { LitElement, customElement, property, html, css } from "lit-element";
-import { useDispatcher } from "lit-element-state-decoupler";
+import { useState } from "lit-element-state-decoupler";
 
 const blockElement = css`
     :host {
@@ -26,7 +26,7 @@ export class AddTodo extends LitElement {
   static get styles() { return [blockElement] }
 
   render() {
-    const { getState, publish } = useDispatcher(this, {value: ""});
+    const { getState, publish } = useState(this, {value: ""});
     return html`
       <input
         type="text"
