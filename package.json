@@ -39,6 +39,7 @@
     ],
     "coverageReporters": [
       "json-summary",
+      "html",
       "text"
     ],
     "coverageThreshold": {

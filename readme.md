@@ -180,3 +180,84 @@ return html`
 | publish(action: string, payload: unknown) => void | Triggers the defined `action` on your reducer, passing the payload |
 | subscribe(yourSubscriberFunction) => void | Notifies subscribed functions when the state has been changed |
 | when(action, yourSubscriberFunction) => void | Notifies subscribed functions when the action has been triggered |
+
+## Avoiding endless state updates
+
+Imaging a scenario where you need get some information from an endpoint you'd would want to store in the state. So you fetch it, and publish it. An example would look like this:
+
+```ts
+render() {
+    const {getState, publish} =
+        useReducer<Notifications>(this, NotificationReducer, { status: "Loading" })
+    fetch("/api/notifications")
+        .then(response => response.json())
+        .then(data => publish("loaded", data))
+        .catch(err => publish("failed", err))
+
+    const { status, notifications } = getState()
+    switch(status) {
+        case "Error": return html`An error has occured`;
+        case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
+    }
+    return html`Please wait while loading`;
+}
+```
+
+Unfortunately, this will lead to an endless loop. The reason is the following flow:
+
+```txt
++--------------------------------+
+|                                |
++-->render -> fetch -> publish+--+
+```
+
+The render triggers the fetch, which triggers a publish. A publish however triggers a render, which triggers a fetch, which triggers a publish. This triggers a render, which triggers a fetch, which triggers a publish. All of that forever, and really fast.
+
+While deploying this is great to performance test your apis, and might not be the original plan. To work around this, you might want to use the library [lit-element-effect](https://github.com/MatthiasKainer/lit-element-effect/) which allows you to execute a certain callback only once, or if something changes.
+
+Install it via `npm install lit-element-effect` and change your code as follows:
+
+```ts
+render() {
+    const {getState, publish} =
+        useReducer<Notifications>(this, NotificationReducer, { status: "Loading" })
+    useOnce(this, () => {
+        fetch("/api/notifications")
+            .then(response => response.json())
+            .then(data => publish("loaded", data))
+            .catch(err => publish("failed", err))
+    })
+
+    const { status, notifications } = getState()
+    switch(status) {
+        case "Error": return html`An error has occured`;
+        case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
+    }
+    return html`Please wait while loading`;
+}
+```
+
+With this little addition it is ensured that the fetch will be called only once. Accordingly, if you want to call the fetch on a property change only, use the `useEffect` hook as follows:
+
+```ts
+@property()
+user: string
+
+render() {
+    const {getState, publish} =
+        useReducer<Notifications>(this, NotificationReducer, { status: "Loading" })
+    useEffect(this, () => {
+        fetch(`/api/notifications/${this.user}`)
+            .then(response => response.json())
+            .then(data => publish("loaded", data))
+            .catch(err => publish("failed", err))
+    }, [this.user])
+
+    const { status, notifications } = getState()
+    switch(status) {
+        case "Error": return html`An error has occured`;
+        case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
+    }
+    return html`Please wait while loading`;
+}
+```
