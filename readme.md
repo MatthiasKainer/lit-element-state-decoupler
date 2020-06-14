@@ -22,6 +22,8 @@ You have two methods to choose from, `useState` and `useReducer`.
 
 The state is a simple way to create a stateful object, the reducer allows you to create a handler for multiple actions.
 
+Note that you need a lit-element version that comes with the `requestUpdate()` function for this library to work.
+
 ## Example
 
 See the following page for two simple todo-list examples using the `useState` and the `useReducer` functions:

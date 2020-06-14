@@ -29,6 +29,11 @@ describe("decorator", () => {
       updated: () => jest.fn(),
     } as unknown) as LitLikeElement;
   });
+
+  it("failes for a element without required functions", () => {
+    expect(() => decorate({} as LitLikeElement)).toThrowError("The lit-element is missing the required functions dispatchEvent or requestUpdate")
+  })
+
   it("decorates a litelement with a list for the states", () => {
     decorate(litElement);
     expect(

@@ -83,6 +83,7 @@ describe("state - state registration", () => {
     beforeEach(() => {
         jest.resetAllMocks()
         litElement = {
+            dispatchEvent: jest.fn(),
             requestUpdate: jest.fn(),
             updated: jest.fn()
         } as unknown as LitLikeElement
