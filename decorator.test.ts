@@ -31,7 +31,7 @@ describe("decorator", () => {
   });
 
   it("failes for a element without required functions", () => {
-    expect(() => decorate({} as LitLikeElement)).toThrowError("The lit-element is missing the required functions dispatchEvent or requestUpdate")
+    expect(() => decorate({} as LitLikeElement)).toThrowError("Element missing required functions (dispatchEvent/requestUpdate)")
   })
 
   it("decorates a litelement with a list for the states", () => {

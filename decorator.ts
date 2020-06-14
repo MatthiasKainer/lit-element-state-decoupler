@@ -1,7 +1,7 @@
 import { LitLikeElement, DecoratedLitLikeElement, State, Reduce, UpdateableLitLikeElement } from "./types";
 
 export function asUpdateableLitElement(element: LitLikeElement) {
-    if (!element.dispatchEvent || !element.requestUpdate) throw new Error("The lit-element is missing the required functions dispatchEvent or requestUpdate")
+    if (!element.dispatchEvent || !element.requestUpdate) throw new Error("Element missing required functions (dispatchEvent/requestUpdate)")
     return element as unknown as UpdateableLitLikeElement
 }
 
