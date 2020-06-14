@@ -18,33 +18,33 @@ A lightweight utility for state handling outside of the component for [lit-eleme
 
 ## Usage
 
-You have two methods to choose from, `useDispatcher` and `useReducer`.
+You have two methods to choose from, `useState` and `useReducer`.
 
-The dispatcher is a simple way to create a stateful object, the reducer allows you to create a handler for multiple actions.
+The state is a simple way to create a stateful object, the reducer allows you to create a handler for multiple actions.
 
 ## Example
 
-See the following page for two simple todo-list examples using the `useDispatcher` and the `useReducer` functions:
+See the following page for two simple todo-list examples using the `useState` and the `useReducer` functions:
 
 [https://matthiaskainer.github.io/lit-element-state-decoupler/](https://matthiaskainer.github.io/lit-element-state-decoupler/)
 
-### Dispatcher
+### State
 
-Getting access to the dispatcher can be done by calling the `useDispatcher` function.
+Getting access to the state can be done by calling the `useState` function.
 
 This should be done on one location in the lifecycle, and not inside a loop with a changing number of iterations because it tries to re-resolve the correct element from the previous run.
 
 ```ts
 render() {
-    const {getState, publish, subscribe} = useDispatcher<YourState>(this, defaultState)
+    const {getState, publish, subscribe} = useState<YourState>(this, defaultState)
 }
 ```
 
-The dispatcher exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
+The state exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
 
 ```ts
 render() {
-    const {publish, getState} = useDispatcher<StateExample>(this, { values: [] })
+    const {publish, getState} = useState<StateExample>(this, { values: [] })
     return html`
         <button @click="${() => publish([...getState(), "lala"])}">Add value</button>
         <textarea>${getState().values.join(",")}</textarea>
@@ -71,7 +71,7 @@ render() {
 }
 ```
 
-Similar to the dispatcher, the reducer exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. In addition, it also requires a reducer function and can directly trigger custom events that bubble up and can be used by the parent.
+Similar to the state, the reducer exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. In addition, it also requires a reducer function and can directly trigger custom events that bubble up and can be used by the parent.
 
 Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
 

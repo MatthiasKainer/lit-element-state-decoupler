@@ -1,43 +1,44 @@
-import { useDispatcher } from "./dispatcher"
-import { Dispatch, LitLikeElement } from "./types"
+import { useState } from "./state"
+import { State, LitLikeElement } from "./types"
 import { asUpdateableLitElement } from "./decorator"
 
 class StateExample { constructor(public value = "true") {} }
 
-describe("Dispatcher", () => {
-    let dispatcher: Dispatch<StateExample>
+describe("State", () => {
+    let state: State<StateExample>
     const litElement = {
+        dispatchEvent: jest.fn(),
         requestUpdate: jest.fn()
     } as unknown as LitLikeElement
     const initialState = { value: "bla", other: "blub" }
 
     beforeEach(() => {
         jest.resetAllMocks()
-        dispatcher = useDispatcher<StateExample>(litElement, initialState)
+        state = useState<StateExample>(litElement, initialState)
     })
 
     it("sets up the default state", () => {
-        expect(dispatcher.getState()).toEqual(initialState)
-        expect(dispatcher.getState()).not.toBe(initialState)
+        expect(state.getState()).toEqual(initialState)
+        expect(state.getState()).not.toBe(initialState)
     })
 
     it("sets the default state up correctly for different types", () => {
-        expect(useDispatcher<string>(litElement, "bla").getState()).toBe("bla")
-        expect(useDispatcher<number>(litElement, 3).getState()).toBe(3)
+        expect(useState<string>(litElement, "bla").getState()).toBe("bla")
+        expect(useState<number>(litElement, 3).getState()).toBe(3)
     })
 
     describe("When the state is published without change", () => {
         const subscriber = jest.fn()
-        let state: StateExample
+        let currentState: StateExample
 
         beforeEach(() => {
-            state = dispatcher.getState()
-            dispatcher.subscribe(subscriber)
-            dispatcher.publish(state)
+            currentState = state.getState()
+            state.subscribe(subscriber)
+            state.publish(currentState)
         })
 
         it("does not update the state", () => {
-            expect(dispatcher.getState()).toBe(state)
+            expect(state.getState()).toBe(currentState)
         })
 
         it("does not notifies any subscriber", () => {
@@ -53,12 +54,12 @@ describe("Dispatcher", () => {
         const subscriber = jest.fn()
 
         beforeEach(() => {
-            dispatcher.subscribe(subscriber)
-            dispatcher.publish({ value: "new" })
+            state.subscribe(subscriber)
+            state.publish({ value: "new" })
         })
 
         it("updates the state", () => {
-            expect(dispatcher.getState()).toEqual({ value: "new"})
+            expect(state.getState()).toEqual({ value: "new"})
         })
 
         it("notifies any subscriber", () => {
@@ -73,9 +74,9 @@ describe("Dispatcher", () => {
 })
 
 
-describe("dispatcher - dispatcher registration", () => {
+describe("state - state registration", () => {
 
-    let dispatcher: Dispatch<StateExample>
+    let state: State<StateExample>
     let litElement: LitLikeElement
     const initialState = { value: "bla", other: "blub" }
 
@@ -85,29 +86,29 @@ describe("dispatcher - dispatcher registration", () => {
             requestUpdate: jest.fn(),
             updated: jest.fn()
         } as unknown as LitLikeElement
-        dispatcher = useDispatcher<StateExample>(litElement, initialState)
+        state = useState<StateExample>(litElement, initialState)
     })
 
-    it("should retrieve the same dispatcher after an update", () => {
+    it("should retrieve the same state after an update", () => {
         asUpdateableLitElement(litElement).updated();
-        const dispatcher1 = useDispatcher<StateExample>(litElement, initialState)
+        const state1 = useState<StateExample>(litElement, initialState)
         asUpdateableLitElement(litElement).updated();
-        const dispatcher2 = useDispatcher<StateExample>(litElement, initialState)
-        expect(dispatcher1).toBe(dispatcher2)
-        expect(dispatcher).toBe(dispatcher2)
+        const state2 = useState<StateExample>(litElement, initialState)
+        expect(state1).toBe(state2)
+        expect(state).toBe(state2)
     })
 
-    it("should add multiple dispatchers between updateds", () => {
-        const dispatcher1 = useDispatcher<string>(litElement, "initialState")
-        const dispatcher2 = useDispatcher<number>(litElement, 42)
+    it("should add multiple states between updateds", () => {
+        const state1 = useState<string>(litElement, "initialState")
+        const state2 = useState<number>(litElement, 42)
         asUpdateableLitElement(litElement).updated();
-        const retrieved0 = useDispatcher<StateExample>(litElement, initialState)
-        const retrieved1 = useDispatcher<string>(litElement, "otherState")
-        const retrieved2 = useDispatcher<number>(litElement, 0)
+        const retrieved0 = useState<StateExample>(litElement, initialState)
+        const retrieved1 = useState<string>(litElement, "otherState")
+        const retrieved2 = useState<number>(litElement, 0)
         asUpdateableLitElement(litElement).updated();
-        expect(retrieved0).toBe(dispatcher)
-        expect(dispatcher1).toBe(retrieved1)
-        expect(dispatcher2).toBe(retrieved2)
+        expect(retrieved0).toBe(state)
+        expect(state1).toBe(retrieved1)
+        expect(state2).toBe(retrieved2)
         expect(retrieved1.getState()).toBe("initialState")
         expect(retrieved2.getState()).toBe(42)
     })

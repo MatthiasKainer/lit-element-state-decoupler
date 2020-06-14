@@ -7,15 +7,15 @@ export type UpdateableLitLikeElement = {
     updated(_?: any): void
 }
 
-type Dispatchers = {
+type States = {
     index: number,
     count: number,
-    dispatchers: Dispatch<any>[]
+    states: State<any>[]
     reducers: Reduce<any>[]
 }
 
 export type DecoratedLitLikeElement = LitLikeElement & {
-    __registered_dispatchers: Dispatchers
+    __registered_states: States
 }
 
 export type Reducer<T> = (state: T) => {[action: string]: (payload?: any | unknown | undefined) => T}
@@ -23,7 +23,7 @@ export type Reducer<T> = (state: T) => {[action: string]: (payload?: any | unkno
 export type ReducerOptions = {
     dispatchEvent?: boolean
 }
-export type Dispatch<T> = {
+export type State<T> = {
     getState: () => T,
     publish: (update: T) => void,
     subscribe: (onChange: (state: T) => void) => void

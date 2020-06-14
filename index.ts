@@ -1,3 +1,3 @@
-export { useDispatcher } from "./dispatcher"
+export { useState } from "./state"
 export { useReducer } from "./reducer"
-export { Dispatch, Reduce, Reducer } from "./types"
+export { State, Reduce, Reducer } from "./types"

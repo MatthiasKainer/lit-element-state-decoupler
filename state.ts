@@ -1,11 +1,11 @@
-import { LitLikeElement, Dispatch } from "./types";
+import { LitLikeElement, State } from "./types";
 import { shallowClone } from "./clone";
-import { withDispatcher } from "./decorator";
+import { withState } from "./decorator";
 
-export const useDispatcher = <T>(element: LitLikeElement, defaultValue: T): Dispatch<T> => {
+export const useState = <T>(element: LitLikeElement, defaultValue: T): State<T> => {
     let state = shallowClone(defaultValue);
     const subscribers: ((state: T) => void)[] = [() => element.requestUpdate()]
-    return withDispatcher(element, {
+    return withState(element, {
         publish: (update: T) => {
             if (state === update) return;
             state = shallowClone(update)
