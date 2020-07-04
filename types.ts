@@ -30,7 +30,7 @@ export type State<T> = {
 }
 export type Reduce<T> = {
     getState: () => T,
-    publish: <T>(action: string, data: T) => void,
+    publish: <T>(action: string, data?: T) => void,
     subscribe: (onChange: (action: string, state: T) => void) => void
     when: (action: string, onChange: (state: T) => void) => void
 }
