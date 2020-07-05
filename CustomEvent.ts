@@ -1,33 +1,28 @@
-import { LitElement, html, customElement, property } from "lit-element";
+import { html } from "lit-element";
 import { useReducer, useState } from "lit-element-state-decoupler";
+import { pureLit } from "pure-lit";
+import { LitElementWithProps } from "pure-lit/dist/types";
 
 const clickReducer = (state: number) => ({
     add: (payload: number) => state + (payload as number ?? 0)
 })
 
-@customElement("demo-clickme")
-export class Clickable extends LitElement {
-    @property({type: Number})
-    startWith = 0
+type ClickackableProps = {startWith: number}
 
-    render() {
-        const {publish} = useReducer<number>(this, clickReducer, this.startWith, { dispatchEvent: true })
+pureLit("demo-clickme", (element: LitElementWithProps<ClickackableProps>) => {
+    const {publish} = useReducer<number>(element, clickReducer, element.startWith, { dispatchEvent: true })
 
-        return html`
-            <button @click="${() => publish("add", 1)}">Increment</button>
-            <slot></slot>
-        `
-    }
-}
+    return html`
+        <button @click="${() => publish("add", 1)}">Increment</button>
+        <slot></slot>
+    `
+}, { defaults: {startWith: 0}})
 
-@customElement("demo-parent")
-export class DemoParent extends LitElement {
-    render() {
-        const {publish, getState} = useState(this, 0)
-        return html`
-            <demo-clickme startWith="0" @add="${(e: CustomEvent<number>) => publish(e.detail)}">
-                Clicked ${getState()} times
-            </demo-clickme>
-        `
-    }
-}
+pureLit("demo-parent", (element) => {
+    const {publish, getState} = useState(element, 0)
+    return html`
+        <demo-clickme .startWith=${0} @add="${(e: CustomEvent<number>) => publish(e.detail)}">
+            Clicked ${getState()} times
+        </demo-clickme>
+    `
+})
