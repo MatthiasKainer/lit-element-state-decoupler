@@ -1,4 +1,4 @@
-import { LitLikeElement, DecoratedLitLikeElement, State, Reduce, UpdateableLitLikeElement } from "./types";
+import { LitLikeElement, DecoratedLitLikeElement, InjectableState, Reduce, UpdateableLitLikeElement, StateOptions } from "./types";
 
 export function asUpdateableLitElement(element: LitLikeElement) {
     if (!element.dispatchEvent || !element.requestUpdate) throw new Error("Element missing required functions (dispatchEvent/requestUpdate)")
@@ -25,7 +25,7 @@ export function decorate(litElement: LitLikeElement) {
     return decoratedLitElement
 }
 
-export function withState(litElement: LitLikeElement, state: State<any>) {
+export function withState(litElement: LitLikeElement, state: InjectableState<any>, options: StateOptions = {}) {
     const decoratedLitElement = decorate(litElement)
     const {index, count} = decoratedLitElement.__registered_states
     if (index === count) {
@@ -36,6 +36,7 @@ export function withState(litElement: LitLikeElement, state: State<any>) {
     }
 
     decoratedLitElement.__registered_states.index++
+    if (options.updateDefault) decoratedLitElement.__registered_states.states[index].inject(state.getState())
     return decoratedLitElement.__registered_states.states[index]
 }
 

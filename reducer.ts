@@ -3,7 +3,7 @@ import { useState } from "./state";
 import { withReducer } from "./decorator";
 
 export const useReducer = <T>(element: LitLikeElement, reducer: Reducer<T>, defaultValue: T, options: ReducerOptions = {}): Reduce<T> => {
-    const {getState, publish} = useState<T>(element, defaultValue)
+    const {getState, publish} = useState<T>(element, defaultValue, options)
 
     const subscribers: ((action: string, state: T) => void)[] = []
     return withReducer(element, {

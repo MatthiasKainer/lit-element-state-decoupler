@@ -1,5 +1,5 @@
 import { useState } from "./state"
-import { State, LitLikeElement } from "./types"
+import { State, LitLikeElement, InjectableState } from "./types"
 import { asUpdateableLitElement } from "./decorator"
 
 class StateExample { constructor(public value = "true") {} }
@@ -47,6 +47,22 @@ describe("State", () => {
 
         it("does not refresh the owning component", () => {
             expect(litElement.requestUpdate).toBeCalledTimes(0)
+        })
+    })
+
+    describe("When state is injected", () => {
+        const subscriber = jest.fn()
+        let newState: StateExample = {value: "changed"}
+
+        beforeEach(() => {
+            state.subscribe(subscriber);
+            (state as InjectableState<StateExample>).inject(newState)
+        })
+        it("should change the state", () => {
+            expect(state.getState()).toBe(newState)
+        })
+        it("should change it without notification", () => {
+            expect(subscriber).not.toBeCalled()
         })
     })
 

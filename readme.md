@@ -38,9 +38,15 @@ This should be done on one location in the lifecycle, and not inside a loop with
 
 ```ts
 render() {
-    const {getState, publish, subscribe} = useState<YourState>(this, defaultState)
+    const {getState, publish, subscribe} = useState<YourState>(this, defaultState, options)
 }
 ```
+
+#### Options
+
+| variable | description |
+|-|-|
+| `updateDefauls: boolean` (default: false) | If set to true, updates the state with the default values every time it is called |
 
 The state exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
 
@@ -97,6 +103,7 @@ const exampleReducer = (state: StateExample) => ({
 | variable | description |
 |-|-|
 | `dispatchEvent: boolean` (default: false) | If set to true, dispatches a action as custom event from the component |
+| `updateDefauls: boolean` (default: false) | If set to true, updates the state with the default values every time it is called |
 
 #### Publish
 
@@ -180,6 +187,38 @@ return html`
 | publish(action: string, payload: unknown) => void | Triggers the defined `action` on your reducer, passing the payload |
 | subscribe(yourSubscriberFunction) => void | Notifies subscribed functions when the state has been changed |
 | when(action, yourSubscriberFunction) => void | Notifies subscribed functions when the action has been triggered |
+
+## One way flow
+
+Both `useState` and `useReducer` have an option to `updateDefauls: boolean` (default: false). If set to true, it updates the state with the default values every time it is called. This is handy for one-way data binding. One example could be a list like:
+
+```ts
+const {publish} =
+    useReducer(this, listReducer, [...this.items], { dispatchEvent: true, updateDefauls: true })
+return html`
+    <input
+    type="text"
+    @keypress=${(e: KeyboardEvent) => {
+        const element = (e.target as HTMLInputElement)
+        if (element.value !== '' && e.key === 'Enter') {
+        publish("add", element.value);
+        element.value = ""
+        }
+    }}
+    />
+    <ul>
+    ${this.items.map((todo) => html`<li>${todo}</li>`)}
+    </ul>
+`;
+```
+
+if this is used in a page like this
+
+```ts
+<list-element .items=${getState()} @add=${(e) => publish(e.details)}></list-element>
+```
+
+Changing the attribute has been fully delegated to the user, while the control itself can still change it.
 
 ## Avoiding endless state updates
 

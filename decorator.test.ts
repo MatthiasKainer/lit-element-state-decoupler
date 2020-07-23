@@ -1,12 +1,13 @@
 import { decorate, withState, withReducer, asUpdateableLitElement } from "./decorator";
-import { LitLikeElement, DecoratedLitLikeElement, State, Reduce } from "./types";
+import { LitLikeElement, DecoratedLitLikeElement, InjectableState, Reduce } from "./types";
 
 function createState() {
   return {
     publish: jest.fn(),
     subscribe: jest.fn(),
     getState: jest.fn(),
-  } as State<string>;
+    inject: jest.fn()
+  } as InjectableState<string>;
 }
 
 function createReducer() {
@@ -60,14 +61,34 @@ describe("decorator", () => {
 
     it("resets the states on updated, returning the first element again", () => {
       const state = createState();
+      (state.getState as jest.Mock).mockReturnValue("state 1")
       withState(litElement, state);
       expect((litElement as DecoratedLitLikeElement).__registered_states.index).toBe(1);
 
       asUpdateableLitElement(litElement).updated();
       expect((litElement as DecoratedLitLikeElement).__registered_states.index).toBe(0);
-      const resolvedState = withState(litElement, createState());
+      const secondState = createState();
+      (secondState.getState as jest.Mock).mockReturnValue("state 2")
+      const resolvedState = withState(litElement, secondState);
       expect((litElement as DecoratedLitLikeElement).__registered_states.count).toBe(1);
       expect(state).toBe(resolvedState);
+      expect(state.getState()).toBe(resolvedState.getState())
+    });
+
+    it("uses the new default state the states on updated if requested, still returning the first element", () => {
+      const state = createState();
+      (state.getState as jest.Mock).mockReturnValue("state 1")
+      withState(litElement, state);
+      expect((litElement as DecoratedLitLikeElement).__registered_states.index).toBe(1);
+
+      asUpdateableLitElement(litElement).updated();
+      expect((litElement as DecoratedLitLikeElement).__registered_states.index).toBe(0);
+      const secondState = createState();
+      (secondState.getState as jest.Mock).mockReturnValue("state 2")
+      const resolvedState = withState(litElement, secondState, { updateDefault: true });
+      expect((litElement as DecoratedLitLikeElement).__registered_states.count).toBe(1);
+      expect(state).toBe(resolvedState);
+      expect(state.inject).toBeCalledWith(secondState.getState())
     });
 
     it("resets the states on updated, returning the correct states on future calls", () => {

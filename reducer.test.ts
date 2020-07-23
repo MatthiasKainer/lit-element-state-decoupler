@@ -99,8 +99,31 @@ describe("Reducer", () => {
             expect(litElement.dispatchEvent).toBeCalledTimes(0)
         })
     })
+
 })
 
+
+describe("reducer - when overriding defaults", () => {
+    let reducer: Reduce<StateExample>
+    let litElement: LitLikeElement
+    const initialState = { value: "bla", other: "blub" }
+
+    beforeEach(() => {
+        jest.resetAllMocks()
+        litElement = {
+            requestUpdate: jest.fn(),
+            dispatchEvent: jest.fn(),
+            updated: jest.fn()
+        } as unknown as LitLikeElement
+    })
+
+    it("should update the defaults on every call", () => {
+        reducer = useReducer<StateExample>(litElement, exampleReducer, initialState, { updateDefault: true })
+        expect(reducer.getState()).toEqual(initialState)
+        reducer = useReducer<StateExample>(litElement, exampleReducer, {...initialState, value: "changed" }, { updateDefault: true })
+        expect(reducer.getState()).toEqual({...initialState, value: "changed" })
+    })
+})
 
 describe("reducer - reducer registration", () => {
 
