@@ -6,7 +6,7 @@ export const useState = <T>(element: LitLikeElement, defaultValue: T, options: S
     let state = shallowClone(defaultValue);
     const subscribers: ((state: T) => void)[] = [() => element.requestUpdate()]
     return withState(element, {
-        publish: (update: T) => {
+        publish: async (update: T) => {
             if (state === update) return;
             state = shallowClone(update)
             subscribers.forEach(subscriber => subscriber(state));

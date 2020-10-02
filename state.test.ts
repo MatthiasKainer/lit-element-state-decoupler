@@ -130,3 +130,48 @@ describe("state - state registration", () => {
         expect(retrieved2.getState()).toBe(42)
     })
 })
+
+describe("State - string type", () => {
+    let state: State<string>
+    const litElement = {
+        dispatchEvent: jest.fn(),
+        requestUpdate: jest.fn()
+    } as unknown as LitLikeElement
+    const subscriber = jest.fn()
+    const initialState = ""
+
+    beforeEach(() => {
+        jest.resetAllMocks()
+        state = useState<string>(litElement, initialState)
+        state.subscribe(subscriber)
+        state.publish("new")
+    })
+
+    it("notifies any subscriber", () => {
+        expect(subscriber).toBeCalledTimes(1)
+        expect(subscriber).toBeCalledWith("new")
+    })
+
+    it("refreshes the owning component", () => {
+        expect(litElement.requestUpdate).toBeCalledTimes(1)
+    })
+
+    describe("When the state is changed and then the default is published again", () => {
+
+        beforeEach(() => {
+            state.publish(initialState)
+        })
+
+        it("resets to the default state", () => {
+            expect(state.getState()).toEqual(initialState)
+        })
+        
+        it("notifies any subscriber", () => {
+            expect(subscriber).toBeCalledTimes(2)
+            expect(subscriber).toBeCalledWith("")
+        })
+    
+        it("refreshes the owning component", () => {
+            expect(litElement.requestUpdate).toBeCalledTimes(2)
+        })
+    });})
