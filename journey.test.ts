@@ -40,11 +40,11 @@ describe("A lit element with reducers and states", () => {
         let triggerReducerChange = (action: string, newValue: string) => console.log(action, newValue)
         litElement.onRender(() => {
             const state = useState(litElement, "initial");
-            currentState = state.getState()
-            triggerStateChange = state.publish
+            currentState = state.get()
+            triggerStateChange = state.set
             const reducer = useReducer(litElement, exampleReducer, "initial")
-            currentReducerState = reducer.getState()
-            triggerReducerChange = reducer.publish
+            currentReducerState = reducer.get()
+            triggerReducerChange = reducer.set
         })
 
         litElement.requestUpdate()

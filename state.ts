@@ -6,13 +6,13 @@ export const useState = <T>(element: LitLikeElement, defaultValue: T, options: S
     let state = shallowClone(defaultValue);
     const subscribers: ((state: T) => void)[] = [() => element.requestUpdate()]
     return withState(element, {
-        publish: async (update: T) => {
+        set: async (update: T) => {
             if (state === update) return;
             state = shallowClone(update)
             subscribers.forEach(subscriber => subscriber(state));
         },
         subscribe: (onChange) => subscribers.push(onChange),
-        getState: () => (state),
+        get: () => (state),
         inject: (update: T) => {state = update}
     } as InjectableState<T>, options) ;
 }

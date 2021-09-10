@@ -18,13 +18,13 @@ describe("State", () => {
     })
 
     it("sets up the default state", () => {
-        expect(state.getState()).toEqual(initialState)
-        expect(state.getState()).not.toBe(initialState)
+        expect(state.get()).toEqual(initialState)
+        expect(state.get()).not.toBe(initialState)
     })
 
     it("sets the default state up correctly for different types", () => {
-        expect(useState<string>(litElement, "bla").getState()).toBe("bla")
-        expect(useState<number>(litElement, 3).getState()).toBe(3)
+        expect(useState<string>(litElement, "bla").get()).toBe("bla")
+        expect(useState<number>(litElement, 3).get()).toBe(3)
     })
 
     describe("When the state is published without change", () => {
@@ -32,13 +32,13 @@ describe("State", () => {
         let currentState: StateExample
 
         beforeEach(() => {
-            currentState = state.getState()
+            currentState = state.get()
             state.subscribe(subscriber)
-            state.publish(currentState)
+            state.set(currentState)
         })
 
         it("does not update the state", () => {
-            expect(state.getState()).toBe(currentState)
+            expect(state.get()).toBe(currentState)
         })
 
         it("does not notifies any subscriber", () => {
@@ -59,7 +59,7 @@ describe("State", () => {
             (state as InjectableState<StateExample>).inject(newState)
         })
         it("should change the state", () => {
-            expect(state.getState()).toBe(newState)
+            expect(state.get()).toBe(newState)
         })
         it("should change it without notification", () => {
             expect(subscriber).not.toBeCalled()
@@ -71,11 +71,11 @@ describe("State", () => {
 
         beforeEach(() => {
             state.subscribe(subscriber)
-            state.publish({ value: "new" })
+            state.set({ value: "new" })
         })
 
         it("updates the state", () => {
-            expect(state.getState()).toEqual({ value: "new"})
+            expect(state.get()).toEqual({ value: "new"})
         })
 
         it("notifies any subscriber", () => {
@@ -126,8 +126,8 @@ describe("state - state registration", () => {
         expect(retrieved0).toBe(state)
         expect(state1).toBe(retrieved1)
         expect(state2).toBe(retrieved2)
-        expect(retrieved1.getState()).toBe("initialState")
-        expect(retrieved2.getState()).toBe(42)
+        expect(retrieved1.get()).toBe("initialState")
+        expect(retrieved2.get()).toBe(42)
     })
 })
 
@@ -144,7 +144,7 @@ describe("State - string type", () => {
         jest.resetAllMocks()
         state = useState<string>(litElement, initialState)
         state.subscribe(subscriber)
-        state.publish("new")
+        state.set("new")
     })
 
     it("notifies any subscriber", () => {
@@ -159,11 +159,11 @@ describe("State - string type", () => {
     describe("When the state is changed and then the default is published again", () => {
 
         beforeEach(() => {
-            state.publish(initialState)
+            state.set(initialState)
         })
 
         it("resets to the default state", () => {
-            expect(state.getState()).toEqual(initialState)
+            expect(state.get()).toEqual(initialState)
         })
         
         it("notifies any subscriber", () => {

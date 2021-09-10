@@ -38,7 +38,7 @@ export function withState(litElement: LitLikeElement, state: InjectableState<any
     }
 
     decoratedLitElement[reservedField].index++
-    if (options.updateDefault) decoratedLitElement[reservedField].states[index].inject(state.getState())
+    if (options.updateDefault) decoratedLitElement[reservedField].states[index].inject(state.get())
     return decoratedLitElement[reservedField].states[index]
 }
 

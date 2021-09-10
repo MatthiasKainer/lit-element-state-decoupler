@@ -3,14 +3,14 @@ import { useState } from "./state";
 import { withReducer } from "./decorator";
 
 export const useReducer = <T>(element: LitLikeElement, reducer: Reducer<T>, defaultValue: T, options: ReducerOptions = {}): Reduce<T> => {
-    const {getState, publish} = useState<T>(element, defaultValue, options)
+    const {get: getState, set: publish} = useState<T>(element, defaultValue, options)
 
     const subscribers: ((action: string, state: T) => void)[] = []
     return withReducer(element, {
-        getState,
+        get: getState,
         subscribe: (onChange) => subscribers.push(onChange),
         when: (action, onChange) => subscribers.push((triggeredAction, state) => triggeredAction === action && onChange(state)),
-        publish: (action, payload) => {
+        set: (action, payload) => {
             const reducers = reducer(getState())
             if (reducers[action]) {
                 publish(reducers[action](payload))

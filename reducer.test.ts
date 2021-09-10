@@ -23,8 +23,8 @@ describe("Reducer", () => {
     })
 
     it("sets up the default state", () => {
-        expect(reducer.getState()).toEqual(initialState)
-        expect(reducer.getState()).not.toBe(initialState)
+        expect(reducer.get()).toEqual(initialState)
+        expect(reducer.get()).not.toBe(initialState)
     })
 
     describe("when triggering an existing action", () => {
@@ -35,14 +35,14 @@ describe("Reducer", () => {
         beforeEach(() => {
             reducer.subscribe(subscriber)
             reducer.when("changeValue", when)
-            currentState = reducer.getState()
-            reducer.publish("changeValue", "lala")
-            reducer.publish("otherAction", "blablub")
+            currentState = reducer.get()
+            reducer.set("changeValue", "lala")
+            reducer.set("otherAction", "blablub")
         })
 
         it("updates the state", () => {
-            expect(reducer.getState()).toEqual({...currentState, value: "blablub"})
-            expect(reducer.getState()).not.toBe(currentState)
+            expect(reducer.get()).toEqual({...currentState, value: "blablub"})
+            expect(reducer.get()).not.toBe(currentState)
         })
 
         it("notifies any subscriber", () => {
@@ -62,9 +62,9 @@ describe("Reducer", () => {
 
         it("dispatches a custom event if specfied in the options", () => {
             const reducer = useReducer(litElement, exampleReducer, initialState, { dispatchEvent: true })
-            reducer.publish("changeValue", "lala")
+            reducer.set("changeValue", "lala")
             expect(litElement.dispatchEvent).toBeCalledTimes(1)
-            const detail = reducer.getState();
+            const detail = reducer.get();
             expect(litElement.dispatchEvent).toBeCalledWith(new CustomEvent("changeValue", { detail }))
             expect((litElement.dispatchEvent as jest.Mock).mock.calls[0][0].detail).toEqual(detail)
         })
@@ -76,13 +76,13 @@ describe("Reducer", () => {
 
         beforeEach(() => {
             reducer.subscribe(subscriber)
-            currentState = reducer.getState()
-            reducer.publish("notexisting", "lala")
+            currentState = reducer.get()
+            reducer.set("notexisting", "lala")
         })
 
         it("doesn't update the state", () => {
-            expect(reducer.getState()).toEqual(currentState)
-            expect(reducer.getState()).toBe(currentState)
+            expect(reducer.get()).toEqual(currentState)
+            expect(reducer.get()).toBe(currentState)
         })
 
         it("doesn't notify any subscriber", () => {
@@ -95,7 +95,7 @@ describe("Reducer", () => {
         
         it("doesn't dispatch a custom event if specfied in the options", () => {
             const reducer = useReducer(litElement, exampleReducer, initialState, { dispatchEvent: true })
-            reducer.publish("notexisting", "lala")
+            reducer.set("notexisting", "lala")
             expect(litElement.dispatchEvent).toBeCalledTimes(0)
         })
     })
@@ -119,9 +119,9 @@ describe("reducer - when overriding defaults", () => {
 
     it("should update the defaults on every call", () => {
         reducer = useReducer<StateExample>(litElement, exampleReducer, initialState, { updateDefault: true })
-        expect(reducer.getState()).toEqual(initialState)
+        expect(reducer.get()).toEqual(initialState)
         reducer = useReducer<StateExample>(litElement, exampleReducer, {...initialState, value: "changed" }, { updateDefault: true })
-        expect(reducer.getState()).toEqual({...initialState, value: "changed" })
+        expect(reducer.get()).toEqual({...initialState, value: "changed" })
     })
 })
 

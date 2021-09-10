@@ -38,7 +38,7 @@ This should be done on one location in the lifecycle, and not inside a loop with
 
 ```ts
 render() {
-    const {getState, publish, subscribe} = useState<YourState>(this, defaultState, options)
+    const {get, set, subscribe} = useState<YourState>(this, defaultState, options)
 }
 ```
 
@@ -48,14 +48,14 @@ render() {
 |-|-|
 | `updateDefauls: boolean` (default: false) | If set to true, updates the state with the default values every time it is called |
 
-The state exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
+The state exposes three functions, `get`, `set` and `subscribe`, and takes in a reference to the current LitElement and a default state. Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
 
 ```ts
 render() {
-    const {publish, getState} = useState<StateExample>(this, { values: [] })
+    const {get, set} = useState<StateExample>(this, { values: [] })
     return html`
-        <button @click="${() => publish([...getState(), "lala"])}">Add value</button>
-        <textarea>${getState().values.join(",")}</textarea>
+        <button @click="${() => set([...get(), "lala"])}">Add value</button>
+        <textarea>${get().values.join(",")}</textarea>
     `
 }
 
@@ -63,8 +63,8 @@ render() {
 
 | function | description |
 |-|-|
-| getState() => YourState | Returns the current state |
-| publish(newState: YourState) => void | Updates the state to a new state |
+| get() => YourState | Returns the current state |
+| set(newState: YourState) => void | Updates the state to a new state |
 | subscribe(yourSubscriberFunction) => void | Notifies subscribed functions if the state has been changed |
 
 ### Reducer
@@ -75,11 +75,11 @@ This should be done on one location in the lifecycle, and not inside a loop with
 
 ```ts
 render() {
-    const {getState, publish, subscribe} = useReducer<YourState>(this, yourReducer, defaultState, options?)
+    const {get, set, subscribe} = useReducer<YourState>(this, yourReducer, defaultState, options?)
 }
 ```
 
-Similar to the state, the reducer exposes three functions, `getState`, `publish` and `subscribe`, and takes in a reference to the current LitElement and a default state. In addition, it also requires a reducer function and can directly trigger custom events that bubble up and can be used by the parent.
+Similar to the state, the reducer exposes three functions, `get`, `set` and `subscribe`, and takes in a reference to the current LitElement and a default state. In addition, it also requires a reducer function and can directly trigger custom events that bubble up and can be used by the parent.
 
 Whenever the state is updated, the LitElement will be updated, and the `render()` method of the component will be called.
 
@@ -105,24 +105,24 @@ const exampleReducer = (state: StateExample) => ({
 | `dispatchEvent: boolean` (default: false) | If set to true, dispatches a action as custom event from the component |
 | `updateDefauls: boolean` (default: false) | If set to true, updates the state with the default values every time it is called |
 
-#### Publish
+#### set
 
-The reducer can be triggered whenever the reducer's `publish` function is triggered, i.e.
+The reducer can be triggered whenever the reducer's `set` function is triggered, i.e.
 
 ```ts
 render() {
-    const {publish, getState} = useReducer<StateExample>(this, exampleReducer, { values: [] });
+    const {set, get} = useReducer<StateExample>(this, exampleReducer, { values: [] });
     return html`
-        <button @click="${() => publish("add", "lala")}">Add value</button>
-        <button @click="${() => publish("empty")}">Clean</button>
-        <textarea>${getState().values.join(",")}</textarea>
+        <button @click="${() => set("add", "lala")}">Add value</button>
+        <button @click="${() => set("empty")}">Clean</button>
+        <textarea>${get().values.join(",")}</textarea>
     `
 }
 ```
 
-#### Publish with custom events
+#### set with custom events
 
-If specified in the options, the publish will also be dispatched as a custom event. An example would look like this:
+If specified in the options, the set will also be dispatched as a custom event. An example would look like this:
 
 ```ts
 class StateExample { constructor(public values = []) {} }
@@ -134,11 +134,11 @@ const exampleReducer = (state: StateExample) => ({
 @customElement("demo-clickme")
 class ClickableComponent extends LitElement {
     render() {
-        const {publish, getState}
+        const {set, get}
             = useReducer<StateExample>(this, exampleReducer, 0, { dispatchEvent: true })
 
         return html`
-            <button @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>
+            <button @click="${() => set("add", 1)}">Clicked ${get()} times</button>
         `
     }
 }
@@ -151,31 +151,31 @@ html`
 
 ```
 
-#### Subscribe to published events
+#### Subscribe to seted events
 
 For side effects it might be interesting for you to listen to your own dispatched events. This can be done via `subscribe`.
 
 Usage:
 
 ```ts
-const {publish, getState, subscribe} = useReducer<StateExample>(this, exampleReducer, 0)
+const {set, get, subscribe} = useReducer<StateExample>(this, exampleReducer, 0)
 
 subscribe((action, state) => console.log("Action triggered:", action, "State:", state))
 
 return html`
-    <button @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>
+    <button @click="${() => set("add", 1)}">Clicked ${get()} times</button>
 `
 ```
 
 In case you want to listen to a single action you can use the convenience method `when`.
 
 ```ts
-const {publish, getState, when} = useReducer<StateExample>(this, exampleReducer, 0)
+const {set, get, when} = useReducer<StateExample>(this, exampleReducer, 0)
 
 when("add", (state) => console.log("Add triggered! State:", state))
 
 return html`
-    <button @hover="${() => publish("highlight")}" @click="${() => publish("add", 1)}">Clicked ${getState()} times</button>
+    <button @hover="${() => set("highlight")}" @click="${() => set("add", 1)}">Clicked ${get()} times</button>
 `
 ```
 
@@ -183,8 +183,8 @@ return html`
 
 | function | description |
 |-|-|
-| getState() => YourState | Returns the current state |
-| publish(action: string, payload: unknown) => void | Triggers the defined `action` on your reducer, passing the payload |
+| get() => YourState | Returns the current state |
+| set(action: string, payload: unknown) => void | Triggers the defined `action` on your reducer, passing the payload |
 | subscribe(yourSubscriberFunction) => void | Notifies subscribed functions when the state has been changed |
 | when(action, yourSubscriberFunction) => void | Notifies subscribed functions when the action has been triggered |
 
@@ -193,7 +193,7 @@ return html`
 Both `useState` and `useReducer` have an option to `updateDefauls: boolean` (default: false). If set to true, it updates the state with the default values every time it is called. This is handy for one-way data binding. One example could be a list like:
 
 ```ts
-const {publish} =
+const {set} =
     useReducer(this, listReducer, [...this.items], { dispatchEvent: true, updateDefauls: true })
 return html`
     <input
@@ -201,7 +201,7 @@ return html`
     @keypress=${(e: KeyboardEvent) => {
         const element = (e.target as HTMLInputElement)
         if (element.value !== '' && e.key === 'Enter') {
-        publish("add", element.value);
+        set("add", element.value);
         element.value = ""
         }
     }}
@@ -215,25 +215,25 @@ return html`
 if this is used in a page like this
 
 ```ts
-<list-element .items=${getState()} @add=${(e) => publish(e.details)}></list-element>
+<list-element .items=${get()} @add=${(e) => set(e.details)}></list-element>
 ```
 
 Changing the attribute has been fully delegated to the user, while the control itself can still change it.
 
 ## Avoiding endless state updates
 
-Imaging a scenario where you need get some information from an endpoint you'd would want to store in the state. So you fetch it, and publish it. An example would look like this:
+Imaging a scenario where you need get some information from an endpoint you'd would want to store in the state. So you fetch it, and set it. An example would look like this:
 
 ```ts
 render() {
-    const {getState, publish} =
+    const {get, set} =
         useReducer<Notifications>(this, NotificationReducer, { status: "Loading" })
     fetch("/api/notifications")
         .then(response => response.json())
-        .then(data => publish("loaded", data))
-        .catch(err => publish("failed", err))
+        .then(data => set("loaded", data))
+        .catch(err => set("failed", err))
 
-    const { status, notifications } = getState()
+    const { status, notifications } = get()
     switch(status) {
         case "Error": return html`An error has occured`;
         case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
@@ -247,10 +247,10 @@ Unfortunately, this will lead to an endless loop. The reason is the following fl
 ```txt
 +--------------------------------+
 |                                |
-+-->render -> fetch -> publish+--+
++-->render -> fetch -> set+--+
 ```
 
-The render triggers the fetch, which triggers a publish. A publish however triggers a render, which triggers a fetch, which triggers a publish. This triggers a render, which triggers a fetch, which triggers a publish. All of that forever, and really fast.
+The render triggers the fetch, which triggers a set. A set however triggers a render, which triggers a fetch, which triggers a set. This triggers a render, which triggers a fetch, which triggers a set. All of that forever, and really fast.
 
 While deploying this is great to performance test your apis, and might not be the original plan. To work around this, you might want to use the library [lit-element-effect](https://github.com/MatthiasKainer/lit-element-effect/) which allows you to execute a certain callback only once, or if something changes.
 
@@ -258,16 +258,16 @@ Install it via `npm install lit-element-effect` and change your code as follows:
 
 ```ts
 render() {
-    const {getState, publish} =
+    const {get, set} =
         useReducer<Notifications>(this, NotificationReducer, { status: "Loading" })
     useOnce(this, () => {
         fetch("/api/notifications")
             .then(response => response.json())
-            .then(data => publish("loaded", data))
-            .catch(err => publish("failed", err))
+            .then(data => set("loaded", data))
+            .catch(err => set("failed", err))
     })
 
-    const { status, notifications } = getState()
+    const { status, notifications } = get()
     switch(status) {
         case "Error": return html`An error has occured`;
         case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
@@ -283,16 +283,16 @@ With this little addition it is ensured that the fetch will be called only once.
 user: string
 
 render() {
-    const {getState, publish} =
+    const {get, set} =
         useReducer<Notifications>(this, NotificationReducer, { status: "Loading" })
     useEffect(this, () => {
         fetch(`/api/notifications/${this.user}`)
             .then(response => response.json())
-            .then(data => publish("loaded", data))
-            .catch(err => publish("failed", err))
+            .then(data => set("loaded", data))
+            .catch(err => set("failed", err))
     }, [this.user])
 
-    const { status, notifications } = getState()
+    const { status, notifications } = get()
     switch(status) {
         case "Error": return html`An error has occured`;
         case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
