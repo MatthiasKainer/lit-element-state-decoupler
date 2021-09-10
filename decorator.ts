@@ -5,21 +5,23 @@ export function asUpdateableLitElement(element: LitLikeElement) {
     return element as unknown as UpdateableLitLikeElement
 }
 
+const reservedField = "__registered_states";
+
 export function decorate(litElement: LitLikeElement) {
     const decoratedLitElement = (litElement as DecoratedLitLikeElement)
-    if (decoratedLitElement.__registered_states) return decoratedLitElement
+    if (decoratedLitElement[reservedField]) return decoratedLitElement
 
     const updateableLitLikeElement = asUpdateableLitElement(litElement)
 
     const oldUpdated = updateableLitLikeElement.updated
-    decoratedLitElement.__registered_states = {
+    decoratedLitElement[reservedField] = {
         index: 0,
         count: 0,
         states: [],
         reducers: []
     }
     updateableLitLikeElement.updated = (args) => {
-        decoratedLitElement.__registered_states.index = 0
+        decoratedLitElement[reservedField].index = 0
         return oldUpdated(args)
     }
     return decoratedLitElement
@@ -27,26 +29,26 @@ export function decorate(litElement: LitLikeElement) {
 
 export function withState(litElement: LitLikeElement, state: InjectableState<any>, options: StateOptions = {}) {
     const decoratedLitElement = decorate(litElement)
-    const {index, count} = decoratedLitElement.__registered_states
+    const {index, count} = decoratedLitElement[reservedField]
     if (index === count) {
-        decoratedLitElement.__registered_states.index++
-        decoratedLitElement.__registered_states.count++
-        decoratedLitElement.__registered_states.states.push(state)
+        decoratedLitElement[reservedField].index++
+        decoratedLitElement[reservedField].count++
+        decoratedLitElement[reservedField].states.push(state)
         return state
     }
 
-    decoratedLitElement.__registered_states.index++
-    if (options.updateDefault) decoratedLitElement.__registered_states.states[index].inject(state.getState())
-    return decoratedLitElement.__registered_states.states[index]
+    decoratedLitElement[reservedField].index++
+    if (options.updateDefault) decoratedLitElement[reservedField].states[index].inject(state.getState())
+    return decoratedLitElement[reservedField].states[index]
 }
 
 export function withReducer(litElement: LitLikeElement, reduce: Reduce<any>) {
     const decoratedLitElement = decorate(litElement)
-    const {index, count, reducers} = decoratedLitElement.__registered_states
+    const {index, count, reducers} = decoratedLitElement[reservedField]
     if (index === count && !reducers[index-1]) {
-        decoratedLitElement.__registered_states.reducers[index-1] = reduce
+        decoratedLitElement[reservedField].reducers[index-1] = reduce
         return reduce
     }
 
-    return decoratedLitElement.__registered_states.reducers[index-1]
+    return decoratedLitElement[reservedField].reducers[index-1]
 }
