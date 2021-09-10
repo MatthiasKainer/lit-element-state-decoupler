@@ -6,8 +6,9 @@ function createState() {
     set: jest.fn(),
     subscribe: jest.fn(),
     get: jest.fn(),
-    inject: jest.fn()
-  } as InjectableState<string>;
+    inject: jest.fn(),
+    value: jest.fn()
+  } as any as InjectableState<string>;
 }
 
 function createReducer() {

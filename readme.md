@@ -38,8 +38,38 @@ This should be done on one location in the lifecycle, and not inside a loop with
 
 ```ts
 render() {
-    const {get, set, subscribe} = useState<YourState>(this, defaultState, options)
+    const {get, set, value, subscribe} = useState<YourState>(this, defaultState, options)
 }
+```
+
+Depending on your preferences you can either use the `get` & `set` functions, or the `state` property.
+
+```ts
+const first = useState(element, defaultState);
+const {value: second} = useState(element, defaultState);
+return html`
+    <button @click=${() => first.set(first.get() + 1)}>
+        First State: ${first.get()} - click on me to increment
+    </button>
+    <button @click=${() => (second = second + 1)}>
+        Second State: ${second} - click on me to increment
+    </button>
+`
+```
+
+The behaviour is the same, and can even be mixed
+
+```ts
+const {get, set, value} = useState(element, defaultState);
+return html`
+    Variant State: ${value}
+    <button @click=${() => set(value + 1)}>
+         click on me to increment
+    </button>
+    <button @click=${() => (value = get() + 1)}>
+        Or click on me to increment
+    </button>
+`
 ```
 
 #### Options

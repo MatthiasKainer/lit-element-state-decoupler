@@ -27,12 +27,13 @@ export type StateOptions = {
 export type ReducerOptions = StateOptions & {
     dispatchEvent?: boolean
 }
-export type State<T> = {
-    get: () => T,
-    set: (update: T) => void,
+export interface State<T> {
+    get: () => T
+    set: (update: T) => void
+    value: T
     subscribe: (onChange: (state: T) => void) => void
 }
-export type InjectableState<T> = State<T> & {
+export interface InjectableState<T> extends State<T> {
     inject: (update: T) => void,
 }
 export type Reduce<T> = {

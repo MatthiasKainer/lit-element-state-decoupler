@@ -5,14 +5,19 @@ import { withState } from "./decorator";
 export const useState = <T>(element: LitLikeElement, defaultValue: T, options: StateOptions = {}): State<T> => {
     let state = shallowClone(defaultValue);
     const subscribers: ((state: T) => void)[] = [() => element.requestUpdate()]
-    return withState(element, {
-        set: async (update: T) => {
-            if (state === update) return;
-            state = shallowClone(update)
-            subscribers.forEach(subscriber => subscriber(state));
-        },
-        subscribe: (onChange) => subscribers.push(onChange),
-        get: () => (state),
-        inject: (update: T) => {state = update}
+    const set = async (update: T) => {
+        if (state === update) return;
+        state = shallowClone(update)
+        subscribers.forEach(subscriber => subscriber(state));
+    }
+    return withState(element, new class {
+        set value(update: T) {
+            set(update)
+        }
+        get value() { return state }
+        async set(update: T) { await set(update) }
+        subscribe(onChange: (state: T) => void) { subscribers.push(onChange) }
+        inject(update: T) {state = update}
+        get() { return state }
     } as InjectableState<T>, options) ;
 }
