@@ -15,9 +15,11 @@ export const useState = <T>(element: LitLikeElement, defaultValue: T, options: S
             set(update)
         }
         get value() { return state }
+        publish(update: T) { set(update) }
         async set(update: T) { await set(update) }
         subscribe(onChange: (state: T) => void) { subscribers.push(onChange) }
         inject(update: T) {state = update}
         get() { return state }
+        getState() { return state }
     } as InjectableState<T>, options) ;
 }

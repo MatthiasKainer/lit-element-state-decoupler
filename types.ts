@@ -28,6 +28,14 @@ export type ReducerOptions = StateOptions & {
     dispatchEvent?: boolean
 }
 export interface State<T> {
+    /**
+     * @deprecated The method should not be used. Use `get` or `value` instead.
+     */
+    getState: () => T
+    /**
+     * @deprecated The method should not be used. Use `set` or `value` instead.
+     */
+    publish: (update: T) => void
     get: () => T
     set: (update: T) => void
     value: T
@@ -37,8 +45,16 @@ export interface InjectableState<T> extends State<T> {
     inject: (update: T) => void,
 }
 export type Reduce<T> = {
-    get: () => T,
-    set: <T>(action: string, data?: T) => void,
+    /**
+     * @deprecated The method should not be used. Use `get` or `value` instead.
+     */
+    getState: () => T
+    /**
+     * @deprecated The method should not be used. Use `set` or `value` instead.
+     */
+    publish: <T>(action: string, data?: T) => void
+    get: () => T
+    set: <T>(action: string, data?: T) => void
     subscribe: (onChange: (action: string, state: T) => void) => void
     when: (action: string, onChange: (state: T) => void) => void
 }

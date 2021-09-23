@@ -163,3 +163,53 @@ describe("reducer - reducer registration", () => {
         expect(reducer2).toBe(retrieved2)
     })
 })
+describe("reducer - legacy functions", () => {
+    const subscriber = jest.fn()
+    const when = jest.fn()
+    let currentState: StateExample
+    let reducer: Reduce<StateExample>
+    const litElement = {
+        requestUpdate: jest.fn(),
+        dispatchEvent: jest.fn()
+    } as unknown as LitLikeElement
+    const initialState = { value: "bla", other: "blub" }
+
+    beforeEach(() => {
+        jest.resetAllMocks()
+        reducer = useReducer<StateExample>(litElement, exampleReducer, initialState)
+        reducer.subscribe(subscriber)
+        reducer.when("changeValue", when)
+        currentState = reducer.getState()
+        reducer.publish("changeValue", "lala")
+        reducer.publish("otherAction", "blablub")
+    })
+
+    it("updates the state", () => {
+        expect(reducer.getState()).toEqual({...currentState, value: "blablub"})
+        expect(reducer.getState()).not.toBe(currentState)
+    })
+
+    it("notifies any subscriber", () => {
+        expect(subscriber).toBeCalledTimes(2)
+        expect(subscriber).toBeCalledWith("changeValue", {...currentState, value: "lala"})
+        expect(subscriber).toBeCalledWith("otherAction", {...currentState, value: "blablub"})
+    })        
+    
+    it("notifies any when", () => {
+        expect(when).toBeCalledTimes(1)
+        expect(when).toBeCalledWith({...currentState, value: "lala"})
+    })
+
+    it("refreshes the owning component every time", () => {
+        expect(litElement.requestUpdate).toBeCalledTimes(2)
+    })
+
+    it("dispatches a custom event if specfied in the options", () => {
+        const reducer = useReducer(litElement, exampleReducer, initialState, { dispatchEvent: true })
+        reducer.publish("changeValue", "lala")
+        expect(litElement.dispatchEvent).toBeCalledTimes(1)
+        const detail = reducer.getState();
+        expect(litElement.dispatchEvent).toBeCalledWith(new CustomEvent("changeValue", { detail }))
+        expect((litElement.dispatchEvent as jest.Mock).mock.calls[0][0].detail).toEqual(detail)
+    })
+})

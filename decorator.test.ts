@@ -17,6 +17,8 @@ function createReducer() {
     set: jest.fn(),
     subscribe: jest.fn(),
     get: jest.fn(),
+    publish: jest.fn(),
+    getState: jest.fn(),
   } as Reduce<string>;
 }
 

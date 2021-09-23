@@ -173,6 +173,90 @@ describe("State value", () => {
         })
     })
 })
+describe("State legacy retrieving", () => {
+    let state: State<StateExample>
+    const litElement = {
+        dispatchEvent: jest.fn(),
+        requestUpdate: jest.fn()
+    } as unknown as LitLikeElement
+    const initialState = { value: "bla", other: "blub" }
+
+    beforeEach(() => {
+        jest.resetAllMocks()
+        state = useState<StateExample>(litElement, initialState)
+    })
+
+    it("sets up the default state", () => {
+        expect(state.getState()).toEqual(initialState)
+        expect(state.getState()).not.toBe(initialState)
+    })
+
+    it("sets the default state up correctly for different types", () => {
+        expect(useState<string>(litElement, "bla").getState()).toBe("bla")
+        expect(useState<number>(litElement, 3).getState()).toBe(3)
+    })
+
+    describe("When the state is published without change", () => {
+        const subscriber = jest.fn()
+        let currentState: StateExample
+
+        beforeEach(() => {
+            currentState = state.get()
+            state.subscribe(subscriber)
+            state.value = currentState
+        })
+
+        it("does not update the state", () => {
+            expect(state.getState()).toBe(currentState)
+        })
+
+        it("does not notifies any subscriber", () => {
+            expect(subscriber).toBeCalledTimes(0)
+        })
+
+        it("does not refresh the owning component", () => {
+            expect(litElement.requestUpdate).toBeCalledTimes(0)
+        })
+    })
+
+    describe("When state is injected", () => {
+        const subscriber = jest.fn()
+        let newState: StateExample = {value: "changed"}
+
+        beforeEach(() => {
+            state.subscribe(subscriber);
+            (state as InjectableState<StateExample>).inject(newState)
+        })
+        it("should change the state", () => {
+            expect(state.getState()).toBe(newState)
+        })
+        it("should change it without notification", () => {
+            expect(subscriber).not.toBeCalled()
+        })
+    })
+
+    describe("When the state is changed", () => {
+        const subscriber = jest.fn()
+
+        beforeEach(() => {
+            state.subscribe(subscriber)
+            state.publish({ value: "new" })
+        })
+
+        it("updates the state", () => {
+            expect(state.getState()).toEqual({ value: "new"})
+        })
+
+        it("notifies any subscriber", () => {
+            expect(subscriber).toBeCalledTimes(1)
+            expect(subscriber).toBeCalledWith({ value: "new"})
+        })
+
+        it("refreshes the owning component", () => {
+            expect(litElement.requestUpdate).toBeCalledTimes(1)
+        })
+    })
+})
 
 describe("State mixed between value and get/set", () => {
     let state: State<StateExample>
