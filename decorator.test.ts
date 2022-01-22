@@ -1,5 +1,5 @@
-import { decorate, withState, withReducer, asUpdateableLitElement } from "./decorator";
-import { LitLikeElement, DecoratedLitLikeElement, InjectableState, Reduce } from "./types";
+import { decorate, withState, withReducer, asUpdateableLitElement, withWorkflow } from "./decorator";
+import { LitLikeElement, DecoratedLitLikeElement, InjectableState, Reduce, Workflow } from "./types";
 
 function createState() {
   return {
@@ -17,9 +17,21 @@ function createReducer() {
     set: jest.fn(),
     subscribe: jest.fn(),
     get: jest.fn(),
-    publish: jest.fn(),
-    getState: jest.fn(),
+    dispatch: jest.fn()
   } as Reduce<string>;
+}
+
+function createWorkflow() {
+  return {
+    addActivity: jest.fn(),
+    addCompensation: jest.fn(),
+    addSideeffect: jest.fn(),
+    projections: jest.fn(),
+    history: jest.fn(),
+    after: jest.fn(),
+    compensate: jest.fn(),
+    plan: jest.fn()
+  } as Workflow;
 }
 
 describe("decorator", () => {
@@ -149,6 +161,45 @@ describe("decorator", () => {
         expect(withReducer(litElement, createReducer())).toBe(middleReducer)
         withState(litElement, createState());
         expect(withReducer(litElement, createReducer())).toBe(lastReducer)
+    })
+  })
+
+  describe("with workflows, which work only together with states", () => {
+    beforeEach(() => {
+        // workflows only exist as part of states, 
+        //  which is why we always have to create one first
+        withState(litElement, createState());
+    })
+
+    it("correctly adds the workflow when we are still adding elements", () => {
+        expect((litElement as DecoratedLitLikeElement).__registered_states.workflows).toHaveLength(0)
+        withWorkflow(litElement, createWorkflow());
+        expect((litElement as DecoratedLitLikeElement).__registered_states.workflows).toHaveLength(1)
+    })
+    it("correctly adds the workflow at the right index when we are still adding elements", () => {
+        withState(litElement, createState());
+        withState(litElement, createState());
+        expect((litElement as DecoratedLitLikeElement).__registered_states.workflows).toHaveLength(0)
+        const currentWorkflow = withWorkflow(litElement, createWorkflow());
+        expect((litElement as DecoratedLitLikeElement).__registered_states.workflows[0]).toBeUndefined()
+        expect((litElement as DecoratedLitLikeElement).__registered_states.workflows[1]).toBeUndefined()
+        expect((litElement as DecoratedLitLikeElement).__registered_states.workflows[2]).toBe(currentWorkflow)
+        expect((litElement as DecoratedLitLikeElement).__registered_states.workflows).toHaveLength(3)
+    })
+    it("correctly gets the workflow after an update", () => {
+        withState(litElement, createState());
+        const middleWorkflow = withWorkflow(litElement, createWorkflow());
+        withState(litElement, createState());
+        const lastWorkflow = withWorkflow(litElement, createWorkflow());
+        asUpdateableLitElement(litElement).updated();
+
+        expect(withWorkflow(litElement, createWorkflow())).toBeUndefined()
+        withState(litElement, createState());
+        expect(withWorkflow(litElement, createWorkflow())).toBeUndefined()
+        withState(litElement, createState());
+        expect(withWorkflow(litElement, createWorkflow())).toBe(middleWorkflow)
+        withState(litElement, createState());
+        expect(withWorkflow(litElement, createWorkflow())).toBe(lastWorkflow)
     })
   })
 });

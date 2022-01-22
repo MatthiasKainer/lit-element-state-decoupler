@@ -1,3 +1,4 @@
 export { useState } from "./state"
 export { useReducer } from "./reducer"
-export { State, Reduce, Reducer } from "./types"
+export { useWorkflow } from "./workflow"
+export { State, Reduce, Reducer, Workflow, WorkflowHistory } from "./types"

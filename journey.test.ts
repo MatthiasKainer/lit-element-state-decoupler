@@ -9,7 +9,7 @@ type LitLikeElementWithRender = LitLikeElement & {
 }
 
 const exampleReducer = (_: string) => ({
-    change: (payload: string) => payload
+    change: (payload: string) => Promise.resolve(payload)
 })
 
 describe("A lit element with reducers and states", () => {
@@ -23,6 +23,7 @@ describe("A lit element with reducers and states", () => {
                 litElement.updated();
             },
             dispatchEvent: jest.fn(),
+            updateComplete: Promise.resolve(),
             updated: jest.fn(),
             render: jest.fn(),
             onRender: async (render: () => void) => {
@@ -33,11 +34,11 @@ describe("A lit element with reducers and states", () => {
         } as LitLikeElementWithRender
     })
 
-    it("should register the states/reducers correctly", () => {
+    it("should register the states/reducers correctly", async () => {
         let currentState: string = ""
         let currentReducerState: string = ""
         let triggerStateChange = (newValue: string) => console.log(newValue)
-        let triggerReducerChange = (action: string, newValue: string) => console.log(action, newValue)
+        let triggerReducerChange = (action: string, newValue: string) => Promise.resolve((console.log(action, newValue), "bla"))
         litElement.onRender(() => {
             const state = useState(litElement, "initial");
             currentState = state.get()
@@ -56,7 +57,7 @@ describe("A lit element with reducers and states", () => {
         expect(currentState).toBe("lala")
         expect(currentReducerState).toBe("initial")
         
-        triggerReducerChange("change", "tata")
+        await triggerReducerChange("change", "tata")
         expect(currentState).toBe("lala")
         expect(currentReducerState).toBe("tata")
     })

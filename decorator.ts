@@ -1,4 +1,4 @@
-import { LitLikeElement, DecoratedLitLikeElement, InjectableState, Reduce, UpdateableLitLikeElement, StateOptions } from "./types";
+import { LitLikeElement, DecoratedLitLikeElement, InjectableState, Reduce, UpdateableLitLikeElement, StateOptions, Workflow } from "./types";
 
 export function asUpdateableLitElement(element: LitLikeElement) {
     if (!element.dispatchEvent || !element.requestUpdate) throw new Error("Element missing required functions (dispatchEvent/requestUpdate)")
@@ -18,7 +18,8 @@ export function decorate(litElement: LitLikeElement) {
         index: 0,
         count: 0,
         states: [],
-        reducers: []
+        reducers: [],
+        workflows: []
     }
     updateableLitLikeElement.updated = (args) => {
         decoratedLitElement[reservedField].index = 0
@@ -51,4 +52,15 @@ export function withReducer(litElement: LitLikeElement, reduce: Reduce<any>) {
     }
 
     return decoratedLitElement[reservedField].reducers[index-1]
+}
+
+export function withWorkflow(litElement: LitLikeElement, workflow: Workflow) {
+    const decoratedLitElement = decorate(litElement)
+    const {index, count, workflows} = decoratedLitElement[reservedField]
+    if (index === count && !workflows[index-1]) {
+        decoratedLitElement[reservedField].workflows[index-1] = workflow
+        return workflow
+    }
+
+    return decoratedLitElement[reservedField].workflows[index-1]
 }

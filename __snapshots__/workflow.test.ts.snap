@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given I have a workflow executes every step when all go well 1`] = `
+Array [
+  Object {
+    "args": Array [
+      "createCustomer",
+      "Mustermann",
+    ],
+    "type": "addActivity",
+  },
+  Object {
+    "args": Array [
+      "customers",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "contracts",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "createContract",
+      Object {
+        "contractNumber": 1,
+        "runtime": 3,
+        "userName": "Mustermann",
+      },
+    ],
+    "type": "addActivity",
+  },
+  Object {
+    "args": Array [
+      "customers",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "contracts",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "changeCustomerName",
+      Object {
+        "oldName": "Mustermann",
+        "userName": "Klaus",
+      },
+    ],
+    "type": "addActivity",
+  },
+  Object {
+    "args": Array [
+      "customers",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "contracts",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "deleteCustomer",
+      [Function],
+    ],
+    "type": "addSideeffect",
+  },
+  Object {
+    "args": Array [
+      "deleteCustomer",
+      "Klaus",
+    ],
+    "type": "addActivity",
+  },
+  Object {
+    "args": Array [
+      "contracts",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "removeContract",
+      1,
+    ],
+    "type": "addActivity",
+  },
+  Object {
+    "args": Array [
+      "customers",
+    ],
+    "type": "projections",
+  },
+  Object {
+    "args": Array [
+      "contracts",
+    ],
+    "type": "projections",
+  },
+]
+`;
