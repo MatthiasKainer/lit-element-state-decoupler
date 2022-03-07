@@ -8,9 +8,7 @@ export const useState = <T>(element: LitLikeElement, defaultValue: T, options: S
     const set = async (update: T) => {
         if (state === update) return;
         state = shallowClone(update)
-        for (const subscriber of subscribers) {
-            await subscriber(state)
-        }
+        await Promise.all(subscribers.map(s => s(state)))
     }
     return withState(element, new class {
         set value(update: T) {
