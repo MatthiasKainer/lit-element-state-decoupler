@@ -1,7 +1,7 @@
 export type LitLikeElement = {
     requestUpdate: () => void
     dispatchEvent: (e: Event) => boolean
-    updateComplete: Promise<void>
+    updateComplete: Promise<void | boolean>
 }
 
 export type UpdateableLitLikeElement = {
