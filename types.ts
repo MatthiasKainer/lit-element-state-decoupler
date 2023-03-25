@@ -58,12 +58,12 @@ export type Reduce<T> = {
 export type WorkflowHistory = { type: string, args: unknown[] }
 
 export type Workflow = {
-    addActivity: (activity: string, data?: unknown) => Promise<void>
-    addCompensation: (activity: string, data?: unknown) => void
+    trigger: (activity: string | string[], data?: unknown) => Promise<{ onUndo: (activity: string, data?: unknown) => void; }>
+    onCancel: (activity: string, data?: unknown) => void
     addSideeffect: (activity: string, sideeffect: (data?: unknown) => Promise<unknown>) => void
-    projections: (key: string) => any
+    view: (key: string) => any
     after: (timeout: Date, unlessActivity: WorkflowHistory, execute: () => Promise<unknown>) => void
-    compensate: () => Promise<unknown>
+    cancel: () => Promise<unknown>
     history: () => WorkflowHistory[]
-    plan: <T>(plan: {[entity: string]: () => Promise<T>}) => Promise<T | null>
+    executePlan: <T>(plan: {[entity: string]: () => Promise<T>}) => Promise<T | null>
 }

@@ -6,42 +6,74 @@ type InnerReducers = { [key: string]: Reduce<any> }
 type Compensation = { [key: string]: unknown[] }
 type Sideeffects = { [key: string]: ((data?: unknown) => Promise<unknown>)[] }
 
+const isFunction = (val: unknown): val is Reducer<any> => Object.prototype.toString.call(val) === "[object Function]"
+
+const parseActivity = async (key: string) => new Promise<string[]>((resolve, reject) => {
+    if (key.indexOf(".") <= 0) reject("Incorrect format. Needs an object format (reducer.function)")
+    const elements = key.split(".")
+    if (elements.length > 2) reject("Incorrect format. Needs an object format (reducer.function)")
+    return resolve(elements)
+})
+
 export const useWorkflow = (element: LitLikeElement, reducers: { [key: string]: {reducer: Reducer<any>, initialState: unknown} }): Workflow => {
-    const innerReducers = Object.entries(reducers).reduce((prev, [projection, {reducer, initialState}]) =>
-        (prev[projection] = useReducer(element, reducer, initialState), prev)
-        , {} as InnerReducers)
+    // Add the reducers to the element, and store their reference
+    const innerReducers = Object.entries(reducers).reduce((prev, [projection, argument]) =>{
+        if (isFunction(argument)) {
+            prev[projection] = useReducer(element, argument, undefined)
+        }
+        else {
+            const {reducer, initialState} = argument;
+            prev[projection] = useReducer(element, reducer, initialState)
+        }
+        return prev;
+    }, {} as InnerReducers)
+        
     const sideeffect: Sideeffects = {}
     const compensations: Compensation = {}
     const workflowHistory: WorkflowHistory[] = []
 
-    const projections = (key: string) => {
+    const view = (key: string) => {
         workflowHistory.push({
-            type: "projections",
+            type: "view",
             args: [key]
         })
         return (innerReducers[key]) ? innerReducers[key].get() : undefined
     }
 
-    const addActivity = async (activity: string, data?: unknown) => {
-        workflowHistory.push({
-            type: "addActivity",
-            args: [activity, data]
-        })
-        await Promise.all(sideeffect[activity]?.map(effect => effect(data)) ?? [])
-        for (const reducer of Object.values(innerReducers)) {
-            await reducer.dispatch(activity, data)
-        }
-    }
 
-    const addCompensation = (activity: string, data?: unknown) => {
+    const onCancel = (activity: string, data?: unknown) => {
         workflowHistory.push({
-            type: "addCompensation",
+            type: "onCancel",
             args: [activity, data]
         })
         compensations[activity] = [
             ...(compensations[activity] || []),
             data
         ];
+    }
+
+    const trigger = async (activity: string | string[], data?: unknown) => {
+        const activities = Array.isArray(activity) ? activity : [activity]
+
+        for (const activity of activities) {
+            const [_reducer, _action] = await parseActivity(activity)
+            workflowHistory.push({
+                type: "trigger",
+                args: [activity, data]
+            })
+            await Promise.all(sideeffect[activity]?.map(effect => effect(data)) ?? [])
+            if (_reducer === "*") {
+                for (const reducer of Object.values(innerReducers)) {
+                    await reducer.dispatch(_action, data)
+                }
+            } else {
+                await innerReducers[_reducer].dispatch(_action, data)            
+            }
+        }
+
+        return {
+            onUndo: onCancel
+        }
     }
 
     const addSideeffect = (activity: string, effect: (data?: unknown) => Promise<unknown>) => {
@@ -55,15 +87,21 @@ export const useWorkflow = (element: LitLikeElement, reducers: { [key: string]: 
         ];
     }
 
-    const compensate = async () => {
+    const cancel = async () => {
         workflowHistory.push({
-            type: "compensate",
+            type: "cancel",
             args: []
         })
         for (const [activity, dataArguments] of Object.entries(compensations)) {
+            const [_reducer, _action] = await parseActivity(activity)
             for (const data of dataArguments) {
-                for (const reducer of Object.values(innerReducers)) {
-                    await reducer.dispatch(activity, data)
+                
+                if (_reducer === "*") {
+                    for (const reducer of Object.values(innerReducers)) {
+                        await reducer.dispatch(_action, data)
+                    }
+                } else {
+                    await innerReducers[_reducer].dispatch(_action, data)            
                 }
             }
         }
@@ -93,26 +131,33 @@ export const useWorkflow = (element: LitLikeElement, reducers: { [key: string]: 
         check()
     }
 
-    const plan = async <T>(plan: {[entity: string]: () => Promise<T>}) => {
+    const plan = async <T>(plan: { [entity: string]: () => Promise<T> }) => {
         for (const [entity, workflow] of Object.entries(plan)) {
             if (reducers[entity] &&
-                JSON.stringify(projections(entity)) === JSON.stringify(reducers[entity].initialState)) {
+                JSON.stringify(view(entity)) === JSON.stringify(reducers[entity].initialState)) {
                 return await workflow()
             }
         }
-        return plan[""] 
-            ? await plan[""]() 
+        const toState = () => 
+            Object.entries(innerReducers).reduce((result, [key, reducer]) => {
+                result[key] = reducer.get();
+                return result;
+            }, {} as {[key:string]: unknown})
+
+        element.dispatchEvent(new CustomEvent("WorkflowCompleted", { detail: toState() }))
+        return plan[""]
+            ? await plan[""]()
             : Promise.resolve(null)
     }
 
     return withWorkflow(element, {
-        addActivity,
+        trigger,
         addSideeffect,
-        projections,
-        addCompensation,
-        compensate,
+        view,
+        onCancel,
+        cancel,
         after,
-        plan,
+        executePlan: plan,
         history: () => [...workflowHistory]
     })
 }

@@ -53,7 +53,8 @@
     },
     "coveragePathIgnorePatterns": [
       "index.ts",
-      "dist"
+      "dist",
+      "test-helpers"
     ]
   },
   "author": "Matthias Kainer",

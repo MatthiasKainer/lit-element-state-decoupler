@@ -431,6 +431,7 @@ const chatReducer = (state) => ({
 
 pureLit("easy-chat", async (element) => {
   const workflow = useWorkflow(element, {
+    // the order of the reducers define the order of the workflow
     user: { reducer: userReducer },
     chat: { reducer: chatReducer },
   });
@@ -442,22 +443,22 @@ pureLit("easy-chat", async (element) => {
     //  the initial value
     user: async () => {
       return html`<create-user @onCreate=${({ detail: userName }) => {
-        workflow.addActivity("createUser", userName);
-        workflow.addCompensation("deleteUser", userName);
+        workflow.trigger("createUser", userName);
+        workflow.onCancel("deleteUser", userName);
       }}></create-user>`;
     },
     // Once we have a user, the second part
     //  of the plan is executed, waiting for a 
-    //  projection of the chat
+    //  projection of the chat    
     chat: async () => {
       // if the user does not join a chat in hour, delete the account
       workflow.after(hours(1), {
         type: "addActivity",
         args: ["joinChat"],
-      }, async () => await workflow.compensate());
+      }, async () => await workflow.cancel());
       return html`<chat-list @onJoin=${({ detail: chat }) => {
-        workflow.addActivity("joinChat", chat);
-        workflow.addCompensation("leaveChat", chat);
+        workflow.trigger("joinChat", chat);
+        workflow.onCancel("leaveChat", chat);
       }}></chat-list>`;
     },
     // This fallback at the end is triggered 
@@ -469,23 +470,23 @@ pureLit("easy-chat", async (element) => {
         workflow.after(hours(1), {
           type: "addActivity",
           args: ["sendMessage"],
-        }, async () => await workflow.compensate());
+        }, async () => await workflow.cancel());
       };
 
       useOnce(element, () => {
         socket.on("message", (stream) => {
-          workflow.addActivity("receiveMessage", stream);
+          workflow.trigger("receiveMessage", stream);
         });
         registerTimeout();
       });
 
-      const { userName } = workflow.projections("user");
-      const { id, messages } = workflow.projections("chat");
+      const { userName } = workflow.view("user");
+      const { id, messages } = workflow.view("chat");
       return html
         `<chat-window id="${id}" userName="${userName}" .messages="${messages}" @onSendMessage=${(
           { detail: message },
         ) => {
-          workflow.addActivity("sendMessage", { id, message, userName });
+          workflow.trigger("sendMessage", { id, message, userName });
           registerTimeout();
         }}></chat-window>`;
     },

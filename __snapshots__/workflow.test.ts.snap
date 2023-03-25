@@ -4,106 +4,138 @@ exports[`Given I have a workflow executes every step when all go well 1`] = `
 Array [
   Object {
     "args": Array [
-      "createCustomer",
+      "customers.createCustomer",
       "Mustermann",
     ],
-    "type": "addActivity",
+    "type": "trigger",
   },
   Object {
     "args": Array [
       "customers",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
       "contracts",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
-      "createContract",
+      "contracts.createContract",
       Object {
         "contractNumber": 1,
         "runtime": 3,
         "userName": "Mustermann",
       },
     ],
-    "type": "addActivity",
+    "type": "trigger",
   },
   Object {
     "args": Array [
       "customers",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
       "contracts",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
-      "changeCustomerName",
+      "customers.changeCustomerName",
       Object {
         "oldName": "Mustermann",
         "userName": "Klaus",
       },
     ],
-    "type": "addActivity",
+    "type": "trigger",
+  },
+  Object {
+    "args": Array [
+      "contracts.changeCustomerName",
+      Object {
+        "oldName": "Mustermann",
+        "userName": "Klaus",
+      },
+    ],
+    "type": "trigger",
   },
   Object {
     "args": Array [
       "customers",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
       "contracts",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
-      "deleteCustomer",
+      "*.changeCustomerName",
+      Object {
+        "oldName": "Klaus",
+        "userName": "Sepp",
+      },
+    ],
+    "type": "trigger",
+  },
+  Object {
+    "args": Array [
+      "customers",
+    ],
+    "type": "view",
+  },
+  Object {
+    "args": Array [
+      "contracts",
+    ],
+    "type": "view",
+  },
+  Object {
+    "args": Array [
+      "customers.deleteCustomer",
       [Function],
     ],
     "type": "addSideeffect",
   },
   Object {
     "args": Array [
-      "deleteCustomer",
-      "Klaus",
+      "customers.deleteCustomer",
+      "Sepp",
     ],
-    "type": "addActivity",
+    "type": "trigger",
   },
   Object {
     "args": Array [
       "contracts",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
-      "removeContract",
+      "contracts.removeContract",
       1,
     ],
-    "type": "addActivity",
+    "type": "trigger",
   },
   Object {
     "args": Array [
       "customers",
     ],
-    "type": "projections",
+    "type": "view",
   },
   Object {
     "args": Array [
       "contracts",
     ],
-    "type": "projections",
+    "type": "view",
   },
 ]
 `;

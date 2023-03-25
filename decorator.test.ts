@@ -23,14 +23,14 @@ function createReducer() {
 
 function createWorkflow() {
   return {
-    addActivity: jest.fn(),
-    addCompensation: jest.fn(),
+    trigger: jest.fn(),
+    onCancel: jest.fn(),
     addSideeffect: jest.fn(),
-    projections: jest.fn(),
+    view: jest.fn(),
     history: jest.fn(),
     after: jest.fn(),
-    compensate: jest.fn(),
-    plan: jest.fn()
+    cancel: jest.fn(),
+    executePlan: jest.fn()
   } as Workflow;
 }
 
