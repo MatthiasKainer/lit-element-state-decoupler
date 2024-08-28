@@ -372,6 +372,7 @@ describe("State - string type", () => {
     describe("When the state is changed and then the default is published again", () => {
 
         beforeEach(() => {
+            state.subscribe(subscriber)
             state.set(initialState)
         })
 
@@ -388,3 +389,37 @@ describe("State - string type", () => {
             expect(litElement.requestUpdate).toBeCalledTimes(2)
         })
     });})
+
+describe("Bug https://github.com/MatthiasKainer/pure-lit/issues/27 - subscribing to array triggers subscribers multiple times", () => {
+    let state: State<string[]>
+    const litElement = {
+        dispatchEvent: jest.fn(),
+        requestUpdate: jest.fn()
+    } as unknown as LitLikeElement
+    const subscriber = jest.fn()
+
+    beforeEach(() => {
+        jest.resetAllMocks()
+        state = useState<string[]>(litElement, [])
+        state.subscribe(subscriber)
+    })
+
+    it("notifies any subscriber", () => {
+        state.set(["new"])
+        expect(subscriber).toBeCalledTimes(1)
+        expect(subscriber).toBeCalledWith(["new"])
+    })
+
+    it("notifies the subscriber only once, even if called multiple times", () => {
+        state = useState<string[]>(litElement, [])
+        state.subscribe(subscriber)
+        state.set(["new"])
+        expect(subscriber).toBeCalledTimes(1)
+        expect(subscriber).toBeCalledWith(["new"])
+        state = useState<string[]>(litElement, [])
+        state.subscribe(subscriber)
+        state.set(["new"])
+        expect(subscriber).toBeCalledTimes(2)
+        expect(subscriber).toBeCalledWith(["new"])
+    })
+})

@@ -7,3 +7,4 @@ coverage/
 !**/*.config.js
 .pytest_cache/
 dist/
+*-conf.yml
