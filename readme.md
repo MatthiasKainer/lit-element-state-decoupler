@@ -308,7 +308,7 @@ render() {
 
     const { status, notifications } = get()
     switch(status) {
-        case "Error": return html`An error has occured`;
+        case "Error": return html`An error has occurred`;
         case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
     }
     return html`Please wait while loading`;
@@ -350,7 +350,7 @@ render() {
 
     const { status, notifications } = get()
     switch(status) {
-        case "Error": return html`An error has occured`;
+        case "Error": return html`An error has occurred`;
         case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
     }
     return html`Please wait while loading`;
@@ -377,7 +377,7 @@ render() {
 
     const { status, notifications } = get()
     switch(status) {
-        case "Error": return html`An error has occured`;
+        case "Error": return html`An error has occurred`;
         case "Success": return html`<notification-table .notifications="${notifications}"></notification-table>`
     }
     return html`Please wait while loading`;
